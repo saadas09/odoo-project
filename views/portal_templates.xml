@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Hotel Reservation Form Template -->
+    <template id="hotel_reservation_form_template" name="Hotel Reservation Form">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <section class="s_cover o_cc o_cc1" data-vcss="001" data-snippet="s_cover">
+                    <div class="container">
+                        <h1 class="text-center mb-4">Book Your Room</h1>
+                        
+                        <t t-if="error">
+                            <div class="alert alert-danger" role="alert">
+                                <t t-esc="error"/>
+                            </div>
+                        </t>
+                        
+                        <t t-if="success">
+                            <div class="alert alert-success" role="alert">
+                                <t t-esc="success"/>
+                            </div>
+                        </t>
+                        
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <form method="post" action="/hotel/reservation/submit" class="s_website_form">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <h4>Personal Information</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="client_name" class="form-label">Full Name *</label>
+                                                    <input type="text" class="form-control" id="client_name" name="client_name" required="required"/>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="client_email" class="form-label">Email *</label>
+                                                    <input type="email" class="form-control" id="client_email" name="client_email" required="required"/>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="client_phone" class="form-label">Phone</label>
+                                                    <input type="tel" class="form-control" id="client_phone" name="client_phone"/>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="passport_number" class="form-label">Passport Number</label>
+                                                    <input type="text" class="form-control" id="passport_number" name="passport_number"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="card mb-4">
+                                        <div class="card-header">
+                                            <h4>Reservation Details</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="check_in" class="form-label">Check-in Date *</label>
+                                                    <input type="date" class="form-control" id="check_in" name="check_in" required="required" t-att-value="check_in"/>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="check_out" class="form-label">Check-out Date *</label>
+                                                    <input type="date" class="form-control" id="check_out" name="check_out" required="required" t-att-value="check_out"/>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="room_id" class="form-label">Select Room *</label>
+                                                <select class="form-select" id="room_id" name="room_id" required="required">
+                                                    <option value="">Choose a room...</option>
+                                                    <t t-foreach="rooms" t-as="room">
+                                                        <option t-att-value="room.id">
+                                                            Room <t t-esc="room.room_number"/> - <t t-esc="room.room_type"/> - $<t t-esc="room.price_per_night"/>/night
+                                                        </option>
+                                                    </t>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary btn-lg">Submit Reservation</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- Hotel Reservation Confirmation Template -->
+    <template id="hotel_reservation_confirmation_template" name="Reservation Confirmation">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <section class="s_cover o_cc o_cc1" data-vcss="001" data-snippet="s_cover">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="alert alert-success text-center" role="alert">
+                                    <h2><i class="fa fa-check-circle"/> Reservation Created Successfully!</h2>
+                                </div>
+                                
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3>Reservation Details</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <table class="table table-borderless">
+                                            <tr>
+                                                <th>Reservation Number:</th>
+                                                <td><t t-esc="reservation.name"/></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Guest Name:</th>
+                                                <td><t t-esc="reservation.client_name"/></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Email:</th>
+                                                <td><t t-esc="reservation.client_email"/></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Room:</th>
+                                                <td>Room <t t-esc="reservation.room_number"/> - <t t-esc="reservation.room_type"/></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Check-in:</th>
+                                                <td><t t-esc="reservation.check_in"/></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Check-out:</th>
+                                                <td><t t-esc="reservation.check_out"/></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Number of Nights:</th>
+                                                <td><t t-esc="reservation.nights"/></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Total Price:</th>
+                                                <td class="h4">$<t t-esc="reservation.total_price"/></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Status:</th>
+                                                <td><span class="badge bg-info"><t t-esc="reservation.status"/></span></td>
+                                            </tr>
+                                        </table>
+                                        
+                                        <div class="alert alert-info mt-4">
+                                            <p><strong>Note:</strong> Your reservation is currently in draft status. Our team will review and confirm your reservation shortly. You will receive a confirmation email at <t t-esc="reservation.client_email"/>.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="text-center mt-4">
+                                    <a href="/hotel/reservation/form" class="btn btn-secondary">Make Another Reservation</a>
+                                    <a href="/hotel/rooms" class="btn btn-primary">View Available Rooms</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- Hotel Rooms List Template -->
+    <template id="hotel_rooms_list_template" name="Hotel Rooms">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+                <section class="s_cover o_cc o_cc1" data-vcss="001" data-snippet="s_cover">
+                    <div class="container">
+                        <h1 class="text-center mb-5">Our Rooms</h1>
+                        
+                        <div class="row">
+                            <t t-foreach="rooms" t-as="room">
+                                <div class="col-md-6 col-lg-4 mb-4">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h5 class="card-title"><t t-esc="room.name"/></h5>
+                                            <p class="card-text">
+                                                <strong>Room Number:</strong> <t t-esc="room.room_number"/><br/>
+                                                <strong>Type:</strong> <t t-esc="room.room_type"/><br/>
+                                                <strong>Capacity:</strong> <t t-esc="room.capacity"/> person(s)<br/>
+                                                <strong>Price:</strong> $<t t-esc="room.price_per_night"/>/night
+                                            </p>
+                                        </div>
+                                        <div class="card-footer">
+                                            <a href="/hotel/reservation/form" class="btn btn-primary btn-block">Book Now</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                        
+                        <t t-if="not rooms">
+                            <div class="alert alert-warning text-center">
+                                <p>No rooms available at the moment. Please check back later.</p>
+                            </div>
+                        </t>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+</odoo>

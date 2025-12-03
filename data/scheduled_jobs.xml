@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Sequence for Hotel Reservations -->
+        <record id="seq_hotel_reservation" model="ir.sequence">
+            <field name="name">Hotel Reservation Sequence</field>
+            <field name="code">hotel.reservation</field>
+            <field name="prefix">RES</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- CRON Job: Sync Booking.com Reservations (Every hour) -->
+        <record id="ir_cron_sync_booking_reservations" model="ir.cron">
+            <field name="name">Sync Booking.com Reservations</field>
+            <field name="model_id" ref="model_api_synchronization"/>
+            <field name="state">code</field>
+            <field name="code">model.sync_booking_reservations()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="doall" eval="False"/>
+        </record>
+
+        <!-- CRON Job: Sync Airbnb Reservations (Every hour) -->
+        <record id="ir_cron_sync_airbnb_reservations" model="ir.cron">
+            <field name="name">Sync Airbnb Reservations</field>
+            <field name="model_id" ref="model_api_synchronization"/>
+            <field name="state">code</field>
+            <field name="code">model.sync_airbnb_reservations()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="doall" eval="False"/>
+        </record>
+
+        <!-- CRON Job: Sync Room Availabilities (Every hour) -->
+        <record id="ir_cron_sync_availabilities" model="ir.cron">
+            <field name="name">Sync Room Availabilities</field>
+            <field name="model_id" ref="model_api_synchronization"/>
+            <field name="state">code</field>
+            <field name="code">model.sync_availabilities()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">hours</field>
+            <field name="numbercall">-1</field>
+            <field name="active" eval="True"/>
+            <field name="doall" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

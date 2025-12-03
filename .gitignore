@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+
+# Odoo
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Scripts de nettoyage temporaires
+clean_module.py
+cleanup_fields.py
+direct_db_fix.py
+fix_module.py
+fix_menus.py
+complete_cleanup.py
+force_cleanup.py
+final_cleanup.py
+check_fields.py
+fix_database.sql

@@ -1,0 +1,67 @@
+/* Hotel Reservation System - Custom Styles */
+
+.hotel_reservation_badge {
+    display: inline-block;
+    padding: 0.25em 0.6em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+}
+
+.hotel_reservation_card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.hotel_reservation_card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+}
+
+.hotel_room_available {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.hotel_room_occupied {
+    color: #ffc107;
+    font-weight: bold;
+}
+
+.hotel_room_maintenance {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+.hotel_reservation_form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hotel_price_highlight {
+    font-size: 1.5em;
+    color: #007bff;
+    font-weight: bold;
+}
+
+/* Calendar customization for reservations */
+.o_calendar_container .hotel_reservation {
+    border-left: 3px solid #007bff;
+}
+
+.o_calendar_container .hotel_reservation.confirmed {
+    background-color: #d4edda;
+}
+
+.o_calendar_container .hotel_reservation.draft {
+    background-color: #d1ecf1;
+}
+
+.o_calendar_container .hotel_reservation.cancelled {
+    background-color: #f8d7da;
+    text-decoration: line-through;
+}

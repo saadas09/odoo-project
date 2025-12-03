@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu -->
+    <menuitem id="menu_hotel_reservation_root"
+              name="Hotel Reservation System"
+              sequence="10"/>
+
+    <!-- Rooms Menu -->
+    <menuitem id="menu_hotel_room"
+              name="Rooms"
+              parent="menu_hotel_reservation_root"
+              action="action_hotel_room"
+              sequence="10"/>
+
+    <!-- Clients Menu -->
+    <menuitem id="menu_hotel_client"
+              name="Clients"
+              parent="menu_hotel_reservation_root"
+              action="action_hotel_client"
+              sequence="20"/>
+
+    <!-- Reservations Menu -->
+    <menuitem id="menu_hotel_reservation"
+              name="Reservations"
+              parent="menu_hotel_reservation_root"
+              action="action_hotel_reservation"
+              sequence="30"/>
+
+    <!-- Configuration Menu -->
+    <menuitem id="menu_hotel_configuration"
+              name="Configuration"
+              parent="menu_hotel_reservation_root"
+              sequence="100"/>
+
+    <!-- API Synchronization Menu -->
+    <record id="action_api_synchronization" model="ir.actions.act_window">
+        <field name="name">API Synchronization</field>
+        <field name="res_model">api.synchronization</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_api_synchronization"
+              name="API Synchronization"
+              parent="menu_hotel_configuration"
+              action="action_api_synchronization"
+              sequence="10"/>
+
+</odoo>
