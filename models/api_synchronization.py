@@ -34,61 +34,53 @@ class ApiSynchronization(models.Model):
 
     @api.model
     def sync_booking_reservations(self):
-        """Synchronize reservations from Booking.com"""
-        _logger.info("Starting Booking.com synchronization...")
+        """Synchronize reservations from Booking.com Mock API"""
+        _logger.info("Starting Booking.com synchronization from Mock API...")
         
         try:
-            # Get API configuration
+            # Get API configuration - use mock API endpoint
             config = self.env['ir.config_parameter'].sudo()
-            booking_api_key = config.get_param('hotel_reservation.booking_api_key')
-            booking_api_endpoint = config.get_param('hotel_reservation.booking_api_endpoint')
+            mock_api_endpoint = config.get_param('hotel_reservation.mock_api_endpoint', 'http://localhost:8000')
             
-            if not booking_api_key or not booking_api_endpoint:
-                _logger.warning("Booking.com API credentials not configured")
-                return False
-            
-            # Prepare API request
-            headers = {
-                'Authorization': f'Bearer {booking_api_key}',
-                'Content-Type': 'application/json'
-            }
-            
-            # Get reservations from the last 7 days
+            # Get reservations from the last 7 days to next 90 days
             from_date = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
             to_date = (datetime.now() + timedelta(days=90)).strftime('%Y-%m-%d')
             
             params = {
-                'from_date': from_date,
-                'to_date': to_date
+                'check_in_from': from_date,
+                'check_in_to': to_date
             }
             
-            # Make API call (example endpoint)
-            # response = requests.get(
-            #     f"{booking_api_endpoint}/reservations",
-            #     headers=headers,
-            #     params=params,
-            #     timeout=30
-            # )
+            # Make API call to mock endpoint
+            response = requests.get(
+                f"{mock_api_endpoint}/booking/reservations",
+                params=params,
+                timeout=30
+            )
             
-            # For demonstration purposes, we'll simulate the response
-            # In production, uncomment the above code and comment out the simulation
+            if response.status_code != 200:
+                raise UserError(f"Mock API returned status code {response.status_code}: {response.text}")
             
-            # Simulated response data
-            simulated_reservations = []
+            response_data = response.json()
+            reservations_data = response_data.get('reservations', [])
+            _logger.info(f"Retrieved {len(reservations_data)} reservations from Booking.com Mock API")
             
             # Process reservations
-            for booking_reservation in simulated_reservations:
-                self._create_or_update_reservation_from_booking(booking_reservation)
+            created_count = 0
+            for booking_reservation in reservations_data:
+                if self._create_or_update_reservation_from_booking(booking_reservation):
+                    created_count += 1
             
             # Log successful sync
             self.create({
                 'name': f'Booking.com Sync - {datetime.now().strftime("%Y-%m-%d %H:%M")}',
                 'last_sync_date': fields.Datetime.now(),
                 'sync_type': 'booking',
-                'status': 'success'
+                'status': 'success',
+                'error_message': f'Successfully synced {created_count} reservations'
             })
             
-            _logger.info("Booking.com synchronization completed successfully")
+            _logger.info(f"Booking.com synchronization completed successfully. Created/Updated {created_count} reservations")
             return True
             
         except Exception as e:
@@ -107,58 +99,53 @@ class ApiSynchronization(models.Model):
 
     @api.model
     def sync_airbnb_reservations(self):
-        """Synchronize reservations from Airbnb"""
-        _logger.info("Starting Airbnb synchronization...")
+        """Synchronize reservations from Airbnb Mock API"""
+        _logger.info("Starting Airbnb synchronization from Mock API...")
         
         try:
-            # Get API configuration
+            # Get API configuration - use mock API endpoint
             config = self.env['ir.config_parameter'].sudo()
-            airbnb_api_key = config.get_param('hotel_reservation.airbnb_api_key')
-            airbnb_api_endpoint = config.get_param('hotel_reservation.airbnb_api_endpoint')
+            mock_api_endpoint = config.get_param('hotel_reservation.mock_api_endpoint', 'http://localhost:8000')
             
-            if not airbnb_api_key or not airbnb_api_endpoint:
-                _logger.warning("Airbnb API credentials not configured")
-                return False
-            
-            # Prepare API request
-            headers = {
-                'Authorization': f'Bearer {airbnb_api_key}',
-                'Content-Type': 'application/json'
-            }
-            
-            # Get reservations from the last 7 days
+            # Get reservations from the last 7 days to next 90 days
             from_date = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
             to_date = (datetime.now() + timedelta(days=90)).strftime('%Y-%m-%d')
             
             params = {
-                'start_date': from_date,
-                'end_date': to_date
+                'start_date_from': from_date,
+                'start_date_to': to_date
             }
             
-            # Make API call (example endpoint)
-            # response = requests.get(
-            #     f"{airbnb_api_endpoint}/reservations",
-            #     headers=headers,
-            #     params=params,
-            #     timeout=30
-            # )
+            # Make API call to mock endpoint
+            response = requests.get(
+                f"{mock_api_endpoint}/airbnb/reservations",
+                params=params,
+                timeout=30
+            )
             
-            # For demonstration purposes, we'll simulate the response
-            simulated_reservations = []
+            if response.status_code != 200:
+                raise UserError(f"Mock API returned status code {response.status_code}: {response.text}")
+            
+            response_data = response.json()
+            reservations_data = response_data.get('reservations', [])
+            _logger.info(f"Retrieved {len(reservations_data)} reservations from Airbnb Mock API")
             
             # Process reservations
-            for airbnb_reservation in simulated_reservations:
-                self._create_or_update_reservation_from_airbnb(airbnb_reservation)
+            created_count = 0
+            for airbnb_reservation in reservations_data:
+                if self._create_or_update_reservation_from_airbnb(airbnb_reservation):
+                    created_count += 1
             
             # Log successful sync
             self.create({
                 'name': f'Airbnb Sync - {datetime.now().strftime("%Y-%m-%d %H:%M")}',
                 'last_sync_date': fields.Datetime.now(),
                 'sync_type': 'airbnb',
-                'status': 'success'
+                'status': 'success',
+                'error_message': f'Successfully synced {created_count} reservations'
             })
             
-            _logger.info("Airbnb synchronization completed successfully")
+            _logger.info(f"Airbnb synchronization completed successfully. Created/Updated {created_count} reservations")
             return True
             
         except Exception as e:
@@ -236,13 +223,25 @@ class ApiSynchronization(models.Model):
 
     def _create_or_update_reservation_from_booking(self, booking_data):
         """Create or update reservation from Booking.com data"""
-        # Extract data from booking response
+        # Extract data from booking response - handle nested structure
         external_id = booking_data.get('reservation_id')
-        guest_name = booking_data.get('guest_name')
-        guest_email = booking_data.get('guest_email')
-        room_number = booking_data.get('room_number')
-        check_in = booking_data.get('check_in')
-        check_out = booking_data.get('check_out')
+        
+        # Extract guest information
+        guest_info = booking_data.get('guest', {})
+        guest_name = f"{guest_info.get('first_name', '')} {guest_info.get('last_name', '')}".strip()
+        guest_email = guest_info.get('email')
+        guest_phone = guest_info.get('phone', '')
+        
+        # Extract room information
+        room_info = booking_data.get('room', {})
+        room_number = room_info.get('room_number')
+        
+        # Extract dates
+        dates_info = booking_data.get('dates', {})
+        check_in = dates_info.get('check_in')
+        check_out = dates_info.get('check_out')
+        
+        _logger.info(f"Processing Booking.com reservation: {external_id} for guest {guest_name}")
         
         # Find or create client
         client = self.env['hotel.client'].search([('email', '=', guest_email)], limit=1)
@@ -250,16 +249,17 @@ class ApiSynchronization(models.Model):
             client = self.env['hotel.client'].create({
                 'name': guest_name,
                 'email': guest_email,
-                'phone': booking_data.get('guest_phone', '')
+                'phone': guest_phone
             })
+            _logger.info(f"Created new client: {guest_name} ({guest_email})")
         
-        # Find room
+        # Find room by room number
         room = self.env['hotel.room'].search([('room_number', '=', room_number)], limit=1)
         if not room:
-            _logger.warning(f"Room {room_number} not found in system")
-            return
+            _logger.warning(f"Room {room_number} not found in system for reservation {external_id}")
+            return False
         
-        # Check if reservation already exists
+        # Check if reservation already exists (by external ID or unique combination)
         existing_reservation = self.env['hotel.reservation'].search([
             ('client_id', '=', client.id),
             ('room_id', '=', room.id),
@@ -269,24 +269,44 @@ class ApiSynchronization(models.Model):
         
         if not existing_reservation:
             # Create new reservation
-            self.env['hotel.reservation'].create({
+            reservation = self.env['hotel.reservation'].create({
                 'client_id': client.id,
                 'room_id': room.id,
                 'check_in': check_in,
                 'check_out': check_out,
                 'status': 'confirmed'
             })
-            _logger.info(f"Created reservation from Booking.com: {external_id}")
+            _logger.info(f"Created reservation from Booking.com: {external_id} -> Odoo ID {reservation.id}")
+            return True
+        else:
+            _logger.info(f"Reservation already exists for {external_id}, skipping")
+            return False
 
     def _create_or_update_reservation_from_airbnb(self, airbnb_data):
         """Create or update reservation from Airbnb data"""
-        # Extract data from Airbnb response
+        # Extract data from Airbnb response - handle nested structure
         external_id = airbnb_data.get('confirmation_code')
-        guest_name = airbnb_data.get('guest', {}).get('name')
-        guest_email = airbnb_data.get('guest', {}).get('email')
-        room_number = airbnb_data.get('listing', {}).get('room_number')
-        check_in = airbnb_data.get('start_date')
-        check_out = airbnb_data.get('end_date')
+        
+        # Extract guest information
+        guest_info = airbnb_data.get('guest', {})
+        guest_name = f"{guest_info.get('first_name', '')} {guest_info.get('last_name', '')}".strip()
+        guest_email = guest_info.get('email')
+        guest_phone = guest_info.get('phone', '')
+        
+        # Extract room information (now includes room_number in mock data)
+        listing_info = airbnb_data.get('listing', {})
+        room_number = listing_info.get('room_number')
+        
+        # Extract dates (Airbnb uses check_in/check_out at root level)
+        check_in = airbnb_data.get('check_in')
+        check_out = airbnb_data.get('check_out')
+        
+        # Extract guest details
+        guest_details = airbnb_data.get('guest_details', {})
+        num_adults = guest_details.get('number_of_adults', 1)
+        num_children = guest_details.get('number_of_children', 0)
+        
+        _logger.info(f"Processing Airbnb reservation: {external_id} for guest {guest_name}")
         
         # Find or create client
         client = self.env['hotel.client'].search([('email', '=', guest_email)], limit=1)
@@ -294,14 +314,15 @@ class ApiSynchronization(models.Model):
             client = self.env['hotel.client'].create({
                 'name': guest_name,
                 'email': guest_email,
-                'phone': airbnb_data.get('guest', {}).get('phone', '')
+                'phone': guest_phone
             })
+            _logger.info(f"Created new client: {guest_name} ({guest_email})")
         
-        # Find room
+        # Find room by room number
         room = self.env['hotel.room'].search([('room_number', '=', room_number)], limit=1)
         if not room:
-            _logger.warning(f"Room {room_number} not found in system")
-            return
+            _logger.warning(f"Room {room_number} not found in system for reservation {external_id}")
+            return False
         
         # Check if reservation already exists
         existing_reservation = self.env['hotel.reservation'].search([
@@ -313,14 +334,18 @@ class ApiSynchronization(models.Model):
         
         if not existing_reservation:
             # Create new reservation
-            self.env['hotel.reservation'].create({
+            reservation = self.env['hotel.reservation'].create({
                 'client_id': client.id,
                 'room_id': room.id,
                 'check_in': check_in,
                 'check_out': check_out,
                 'status': 'confirmed'
             })
-            _logger.info(f"Created reservation from Airbnb: {external_id}")
+            _logger.info(f"Created reservation from Airbnb: {external_id} -> Odoo ID {reservation.id}")
+            return True
+        else:
+            _logger.info(f"Reservation already exists for {external_id}, skipping")
+            return False
 
     def _send_availability_to_booking(self, room, availability_data):
         """Send availability updates to Booking.com"""

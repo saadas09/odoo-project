@@ -1,5 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Server Actions for API Synchronization - Define FIRST -->
+    <record id="action_sync_booking_reservations" model="ir.actions.server">
+        <field name="name">Sync Booking.com Reservations</field>
+        <field name="model_id" ref="model_api_synchronization"/>
+        <field name="state">code</field>
+        <field name="code">
+model.sync_booking_reservations()
+action = {
+    'type': 'ir.actions.client',
+    'tag': 'display_notification',
+    'params': {
+        'title': 'Booking.com Sync',
+        'message': 'Synchronization started. Check API Synchronization logs for results.',
+        'type': 'success',
+        'sticky': False,
+    }
+}
+        </field>
+    </record>
+
+    <record id="action_sync_airbnb_reservations" model="ir.actions.server">
+        <field name="name">Sync Airbnb Reservations</field>
+        <field name="model_id" ref="model_api_synchronization"/>
+        <field name="state">code</field>
+        <field name="code">
+model.sync_airbnb_reservations()
+action = {
+    'type': 'ir.actions.client',
+    'tag': 'display_notification',
+    'params': {
+        'title': 'Airbnb Sync',
+        'message': 'Synchronization started. Check API Synchronization logs for results.',
+        'type': 'success',
+        'sticky': False,
+    }
+}
+        </field>
+    </record>
+
     <!-- Tree View for Hotel Reservations -->
     <record id="view_hotel_reservation_tree" model="ir.ui.view">
         <field name="name">hotel.reservation.tree</field>
@@ -26,9 +65,9 @@
         <field name="arch" type="xml">
             <form string="Hotel Reservation">
                 <header>
-                    <button name="action_confirm" string="Confirm" type="object" states="draft" class="oe_highlight"/>
-                    <button name="action_cancel" string="Cancel" type="object" states="draft,confirmed" class="btn-secondary"/>
-                    <button name="action_set_to_draft" string="Set to Draft" type="object" states="cancelled" class="btn-secondary"/>
+                    <button name="action_confirm" string="Confirm" type="object" states="draft" class="oe_highlight" attrs="{'invisible': [('status', '!=', 'draft')]}"/>
+                    <button name="action_cancel" string="Cancel" type="object" states="draft,confirmed" class="btn-secondary" attrs="{'invisible': [('status', 'not in', ['draft', 'confirmed'])]}"/>
+                    <button name="action_set_to_draft" string="Set to Draft" type="object" states="cancelled" class="btn-secondary" attrs="{'invisible': [('status', '!=', 'cancelled')]}"/>
                     <field name="status" widget="statusbar" statusbar_visible="draft,confirmed,cancelled"/>
                 </header>
                 <sheet>

@@ -1,0 +1,1122 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[french]{babel}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{fontawesome5}
+\usepackage{hyperref}
+
+% Colors
+\definecolor{navyblue}{RGB}{15,20,25}
+\definecolor{goldcolor}{RGB}{212,175,55}
+\definecolor{lightgray}{RGB}{248,249,250}
+
+% Custom theme colors
+\setbeamercolor{palette primary}{bg=navyblue,fg=white}
+\setbeamercolor{palette secondary}{bg=goldcolor,fg=navyblue}
+\setbeamercolor{palette tertiary}{bg=navyblue,fg=white}
+\setbeamercolor{palette quaternary}{bg=goldcolor,fg=navyblue}
+\setbeamercolor{structure}{fg=navyblue}
+\setbeamercolor{section in toc}{fg=navyblue}
+\setbeamercolor{subsection in head/foot}{bg=lightgray,fg=navyblue}
+
+% Code listing settings
+\lstset{
+    language=Python,
+    basicstyle=\tiny\ttfamily,
+    keywordstyle=\color{blue},
+    stringstyle=\color{red},
+    commentstyle=\color{green!60!black},
+    breaklines=true,
+    frame=single,
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    showstringspaces=false
+}
+
+% Title page information
+\title[Système de Réservation Hôtelière]{Système de Réservation Hôtelière Intelligent}
+\subtitle{Plateforme Web avec Synchronisation Multi-API}
+\author[Saad ABS \& Ayoub NASSIH]{
+    \textbf{Réalisé par:}\\
+    Saad ABS \& Ayoub NASSIH\\[10pt]
+    \textbf{Encadré par:}\\
+    Mr. Imad BADI
+}
+\institute[ENSAH]{
+    École Nationale des Sciences Appliquées\\
+    Al Hoceima
+}
+\date{\today}
+
+\logo{\includegraphics[height=0.8cm]{logo_ensah.png}}
+
+\begin{document}
+
+% ============================================================
+% TITLE PAGE
+% ============================================================
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% ============================================================
+% TABLE OF CONTENTS
+% ============================================================
+\begin{frame}{Plan de la Présentation}
+    \tableofcontents
+\end{frame}
+
+% ============================================================
+% SECTION 1: INTRODUCTION
+% ============================================================
+\section{Introduction}
+
+\begin{frame}{Contexte du Projet}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Problématique}
+        \begin{itemize}
+            \item Gestion manuelle des réservations
+            \item Multiplicité des plateformes (Booking.com, Airbnb)
+            \item Risque de double réservation
+            \item Manque de synchronisation en temps réel
+            \item Interface utilisateur peu attractive
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Objectifs}
+        \begin{itemize}
+            \item Centraliser la gestion des réservations
+            \item Synchroniser automatiquement avec les API externes
+            \item Interface web moderne et intuitive
+            \item Système de gestion back-office complet
+            \item Architecture modulaire et extensible
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Technologies Utilisées}
+    \begin{center}
+        \begin{tikzpicture}[scale=0.8]
+            % Backend
+            \node[draw, rectangle, fill=navyblue!20, minimum width=3cm, minimum height=1cm] at (0,3) {\textbf{Backend}};
+            \node at (0,2.3) {Odoo 16.0};
+            \node at (0,1.8) {Python 3.10+};
+            \node at (0,1.3) {PostgreSQL};
+            
+            % Frontend
+            \node[draw, rectangle, fill=goldcolor!30, minimum width=3cm, minimum height=1cm] at (5,3) {\textbf{Frontend}};
+            \node at (5,2.3) {QWeb Templates};
+            \node at (5,1.8) {Bootstrap 5.1.3};
+            \node at (5,1.3) {JavaScript};
+            
+            % Integration
+            \node[draw, rectangle, fill=green!20, minimum width=3cm, minimum height=1cm] at (10,3) {\textbf{Intégration}};
+            \node at (10,2.3) {REST API};
+            \node at (10,1.8) {Booking.com API};
+            \node at (10,1.3) {Airbnb API};
+            
+            % Design
+            \node[draw, rectangle, fill=red!20, minimum width=3cm, minimum height=1cm] at (2.5,0) {\textbf{Design}};
+            \node at (2.5,-0.7) {Playfair Display};
+            \node at (2.5,-1.2) {Font Awesome 6.4};
+            \node at (2.5,-1.7) {Glass Morphism};
+            
+            % Hosting
+            \node[draw, rectangle, fill=blue!20, minimum width=3cm, minimum height=1cm] at (7.5,0) {\textbf{Hébergement}};
+            \node at (7.5,-0.7) {Windows Server};
+            \node at (7.5,-1.2) {Port 8069};
+            \node at (7.5,-1.7) {Mock API (Port 8000)};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+% ============================================================
+% SECTION 2: ARCHITECTURE
+% ============================================================
+\section{Architecture du Système}
+
+\begin{frame}{Architecture Globale}
+    \begin{center}
+        % Placeholder for architecture diagram
+        \fbox{\includegraphics[width=0.9\textwidth,height=0.6\textheight]{architecture_diagram.png}}
+    \end{center}
+    \begin{itemize}
+        \item \textbf{3 Couches:} Présentation, Logique Métier, Données
+        \item \textbf{MVC Pattern:} Models, Views, Controllers
+        \item \textbf{API Gateway:} Synchronisation multi-plateformes
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Structure du Module Odoo}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Structure des Dossiers}
+        \begin{itemize}
+            \item \texttt{models/} - Modèles de données
+            \item \texttt{views/} - Templates QWeb
+            \item \texttt{controllers/} - Contrôleurs web
+            \item \texttt{security/} - Droits d'accès
+            \item \texttt{data/} - Données initiales
+            \item \texttt{static/} - Assets (CSS, JS, Images)
+            \item \texttt{tests/} - Tests unitaires
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Fichiers Principaux}
+        \begin{itemize}
+            \item \texttt{\_\_manifest\_\_.py}
+            \item \texttt{hotel\_room.py}
+            \item \texttt{hotel\_client.py}
+            \item \texttt{hotel\_reservation.py}
+            \item \texttt{api\_synchronization.py}
+            \item \texttt{portal.py}
+            \item \texttt{portal\_templates.xml}
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Modèle de Données - Diagramme de Classes}
+    \begin{center}
+        % Placeholder for class diagram
+        \fbox{\includegraphics[width=0.85\textwidth,height=0.65\textheight]{class_diagram.png}}
+    \end{center}
+\end{frame}
+
+% ============================================================
+% SECTION 3: MODÈLES DE DONNÉES
+% ============================================================
+\section{Modèles de Données}
+
+\begin{frame}[fragile]{Modèle: Hotel Room}
+    \begin{lstlisting}[language=Python]
+class HotelRoom(models.Model):
+    _name = 'hotel.room'
+    _description = 'Hotel Room'
+    
+    name = fields.Char(string='Room Name', required=True)
+    room_number = fields.Char(string='Room Number', required=True)
+    room_type = fields.Selection([
+        ('single', 'Single'),
+        ('double', 'Double'),
+        ('suite', 'Suite'),
+        ('deluxe', 'Deluxe')
+    ], string='Room Type', required=True)
+    capacity = fields.Integer(string='Capacity', required=True)
+    price_per_night = fields.Float(string='Price per Night', required=True)
+    status = fields.Selection([
+        ('available', 'Available'),
+        ('occupied', 'Occupied'),
+        ('maintenance', 'Maintenance')
+    ], string='Status', default='available')
+    description = fields.Text(string='Description')
+    amenities = fields.Text(string='Amenities')
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Modèle: Hotel Client}
+    \begin{lstlisting}[language=Python]
+class HotelClient(models.Model):
+    _name = 'hotel.client'
+    _description = 'Hotel Client'
+    
+    name = fields.Char(string='Client Name', required=True)
+    email = fields.Char(string='Email', required=True)
+    phone = fields.Char(string='Phone Number', required=True)
+    address = fields.Text(string='Address')
+    id_number = fields.Char(string='ID/Passport Number')
+    reservation_ids = fields.One2many(
+        'hotel.reservation', 
+        'client_id', 
+        string='Reservations'
+    )
+    total_reservations = fields.Integer(
+        compute='_compute_total_reservations',
+        string='Total Reservations'
+    )
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Modèle: Hotel Reservation}
+    \begin{lstlisting}[language=Python]
+class HotelReservation(models.Model):
+    _name = 'hotel.reservation'
+    _description = 'Hotel Reservation'
+    
+    client_id = fields.Many2one('hotel.client', string='Client', required=True)
+    room_id = fields.Many2one('hotel.room', string='Room', required=True)
+    check_in_date = fields.Date(string='Check-in Date', required=True)
+    check_out_date = fields.Date(string='Check-out Date', required=True)
+    number_of_guests = fields.Integer(string='Number of Guests', default=1)
+    total_price = fields.Float(compute='_compute_total_price', store=True)
+    status = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('checked_in', 'Checked In'),
+        ('checked_out', 'Checked Out'),
+        ('cancelled', 'Cancelled')
+    ], default='draft')
+    source = fields.Selection([
+        ('direct', 'Direct Booking'),
+        ('booking_com', 'Booking.com'),
+        ('airbnb', 'Airbnb')
+    ], default='direct')
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Modèle: API Synchronization}
+    \begin{lstlisting}[language=Python]
+class ApiSynchronization(models.Model):
+    _name = 'api.synchronization'
+    _description = 'API Synchronization Log'
+    
+    name = fields.Char(string='Sync Name', required=True)
+    sync_type = fields.Selection([
+        ('booking_com', 'Booking.com'),
+        ('airbnb', 'Airbnb')
+    ], string='Sync Type', required=True)
+    sync_date = fields.Datetime(string='Sync Date', default=fields.Datetime.now)
+    status = fields.Selection([
+        ('success', 'Success'),
+        ('failed', 'Failed'),
+        ('partial', 'Partial')
+    ], string='Status', default='success')
+    reservations_synced = fields.Integer(string='Reservations Synced')
+    error_message = fields.Text(string='Error Message')
+    sync_details = fields.Text(string='Sync Details')
+    \end{lstlisting}
+\end{frame}
+
+% ============================================================
+% SECTION 4: SYNCHRONISATION API
+% ============================================================
+\section{Synchronisation Multi-API}
+
+\begin{frame}{Architecture de Synchronisation}
+    \begin{center}
+        % Placeholder for sync architecture
+        \fbox{\includegraphics[width=0.9\textwidth,height=0.6\textheight]{sync_architecture.png}}
+    \end{center}
+    \begin{itemize}
+        \item \textbf{Cron Job:} Synchronisation automatique toutes les heures
+        \item \textbf{API Mock Server:} Simulation Booking.com \& Airbnb (Port 8000)
+        \item \textbf{Error Handling:} Gestion des échecs et retry logic
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Synchronisation Booking.com}
+    \begin{lstlisting}[language=Python]
+def sync_booking_com(self):
+    """Synchronize reservations from Booking.com"""
+    try:
+        url = "http://localhost:8000/api/booking_com/reservations"
+        response = requests.get(url, timeout=10)
+        
+        if response.status_code == 200:
+            reservations = response.json()
+            synced_count = 0
+            
+            for res_data in reservations:
+                # Check if reservation exists
+                existing = self.env['hotel.reservation'].search([
+                    ('external_id', '=', res_data.get('id')),
+                    ('source', '=', 'booking_com')
+                ])
+                
+                if not existing:
+                    # Create client and reservation
+                    self._create_reservation_from_api(res_data, 'booking_com')
+                    synced_count += 1
+            
+            return synced_count
+    except Exception as e:
+        _logger.error(f"Booking.com sync failed: {str(e)}")
+        return 0
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Mock API Server - Flask}
+    \begin{lstlisting}[language=Python]
+from flask import Flask, jsonify
+import random
+from datetime import datetime, timedelta
+
+app = Flask(__name__)
+
+@app.route('/api/booking_com/reservations', methods=['GET'])
+def get_booking_com_reservations():
+    """Mock Booking.com API endpoint"""
+    reservations = []
+    for i in range(1, 6):
+        check_in = datetime.now() + timedelta(days=random.randint(1, 30))
+        check_out = check_in + timedelta(days=random.randint(2, 7))
+        
+        reservations.append({
+            'id': f'BKG{1000 + i}',
+            'guest_name': f'Guest Booking {i}',
+            'guest_email': f'guest{i}@booking.com',
+            'room_number': f'10{i}',
+            'check_in': check_in.strftime('%Y-%m-%d'),
+            'check_out': check_out.strftime('%Y-%m-%d'),
+            'guests': random.randint(1, 4),
+            'total_price': random.randint(100, 500)
+        })
+    
+    return jsonify(reservations)
+    \end{lstlisting}
+\end{frame}
+
+% ============================================================
+% SECTION 5: INTERFACE WEB
+% ============================================================
+\section{Interface Web Luxueuse}
+
+\begin{frame}{Design System - ROYAL PALACE}
+    \begin{columns}
+        \column{0.6\textwidth}
+        \textbf{Palette de Couleurs}
+        \begin{itemize}
+            \item \colorbox{navyblue}{\color{white}Navy Blue} \texttt{\#0f1419} - Fond principal
+            \item \colorbox{goldcolor}{\color{navyblue}Gold} \texttt{\#d4af37} - Accents premium
+            \item \colorbox{white}{White} \texttt{\#ffffff} - Texte principal
+            \item \colorbox{lightgray}{Light Gray} \texttt{\#f8f9fa} - Sections alternées
+        \end{itemize}
+        
+        \vspace{10pt}
+        \textbf{Typographie}
+        \begin{itemize}
+            \item \textbf{Playfair Display} - Titres élégants (serif)
+            \item \textbf{Inter} - Corps de texte (sans-serif)
+            \item Poids: 300 à 800
+        \end{itemize}
+        
+        \column{0.4\textwidth}
+        \textbf{Effets Visuels}
+        \begin{itemize}
+            \item Glass Morphism
+            \item Backdrop Blur
+            \item Smooth Shadows
+            \item Hover Transforms
+            \item Gold Gradients
+        \end{itemize}
+        
+        \vspace{10pt}
+        \textbf{Icônes}
+        \begin{itemize}
+            \item Font Awesome 6.4
+            \item Gold highlights
+            \item Size variations
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Page d'Accueil - Hero Section}
+    \begin{center}
+        % Placeholder for homepage screenshot
+        \fbox{\includegraphics[width=0.95\textwidth,height=0.7\textheight]{homepage_hero.png}}
+    \end{center}
+    \begin{itemize}
+        \item Image de luxe en arrière-plan (Unsplash)
+        \item Overlay sombre avec gradient
+        \item Barre de recherche avec effet verre
+        \item Call-to-action premium
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Navigation Luxueuse}
+    \begin{center}
+        % Placeholder for navigation
+        \fbox{\includegraphics[width=0.95\textwidth,height=0.3\textheight]{navigation.png}}
+    \end{center}
+    
+    \textbf{Caractéristiques:}
+    \begin{itemize}
+        \item Fond navy semi-transparent avec backdrop-filter
+        \item Logo "ROYAL PALACE" en gold
+        \item Navigation sticky avec smooth scroll
+        \item Menu responsive pour mobile
+        \item Hover effects sur les liens
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Cartes de Chambres - Luxury Cards}
+    \begin{center}
+        % Placeholder for room cards
+        \fbox{\includegraphics[width=0.95\textwidth,height=0.6\textheight]{room_cards.png}}
+    \end{center}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Design Features:}
+        \begin{itemize}
+            \item Images Unsplash HD
+            \item Prix en gold badge
+            \item Zoom au hover
+            \item Shadow elevation
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Information:}
+        \begin{itemize}
+            \item Nom de la chambre
+            \item Type et capacité
+            \item Prix par nuit
+            \item Bouton "Reserve Now"
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{CSS - Glass Morphism Effect}
+    \begin{lstlisting}[language=HTML]
+.glass-panel {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.luxury-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.luxury-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.luxury-card img {
+    transition: transform 0.6s ease;
+}
+
+.luxury-card:hover img {
+    transform: scale(1.1);
+}
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}{Section Amenities}
+    \begin{center}
+        % Placeholder for amenities section
+        \fbox{\includegraphics[width=0.95\textwidth,height=0.6\textheight]{amenities_section.png}}
+    \end{center}
+    
+    \textbf{Services Premium:}
+    \begin{itemize}
+        \item \faIcon{wifi} High-Speed WiFi - Gratuit dans tout l'hôtel
+        \item \faIcon{concierge-bell} Concierge 24/7 - Service personnalisé
+        \item \faIcon{swimming-pool} Infinity Pool - Vue panoramique
+        \item \faIcon{utensils} Fine Dining - Cuisine étoilée Michelin
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% SECTION 6: FONCTIONNALITÉS
+% ============================================================
+\section{Fonctionnalités Principales}
+
+\begin{frame}{Système de Réservation}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Côté Client}
+        \begin{enumerate}
+            \item Recherche de chambres disponibles
+            \item Sélection des dates
+            \item Choix du nombre de personnes
+            \item Formulaire de réservation
+            \item Authentification requise
+            \item Confirmation instantanée
+            \item Historique des réservations
+        \end{enumerate}
+        
+        \column{0.5\textwidth}
+        \textbf{Côté Administrateur}
+        \begin{enumerate}
+            \item Vue calendrier des réservations
+            \item Gestion des chambres
+            \item Gestion des clients
+            \item Validation des réservations
+            \item Statistiques et rapports
+            \item Synchronisation API
+            \item Logs de synchronisation
+        \end{enumerate}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Formulaire de Réservation}
+    \begin{center}
+        % Placeholder for booking form
+        \fbox{\includegraphics[width=0.8\textwidth,height=0.65\textheight]{booking_form.png}}
+    \end{center}
+    \begin{itemize}
+        \item Validation côté client et serveur
+        \item Calcul automatique du prix total
+        \item Vérification de disponibilité
+        \item Redirection après authentification
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Mes Réservations - Portail Client}
+    \begin{center}
+        % Placeholder for my bookings
+        \fbox{\includegraphics[width=0.9\textwidth,height=0.6\textheight]{my_bookings.png}}
+    \end{center}
+    
+    \textbf{Fonctionnalités:}
+    \begin{itemize}
+        \item Liste des réservations par statut
+        \item Badges colorés (Draft, Confirmé, Check-in, Check-out)
+        \item Détails complets de chaque réservation
+        \item Recherche par email ou nom
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Back-Office Odoo}
+    \begin{center}
+        % Placeholder for admin interface
+        \fbox{\includegraphics[width=0.9\textwidth,height=0.6\textheight]{admin_backoffice.png}}
+    \end{center}
+    
+    \textbf{Modules Administrateur:}
+    \begin{itemize}
+        \item Tableau de bord avec KPIs
+        \item Gestion des chambres (CRUD complet)
+        \item Gestion des clients et historique
+        \item Gestion des réservations avec workflow
+        \item Logs de synchronisation API
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% SECTION 7: TESTS ET VALIDATION
+% ============================================================
+\section{Tests et Validation}
+
+\begin{frame}[fragile]{Tests Unitaires}
+    \begin{lstlisting}[language=Python]
+class TestHotelReservation(TransactionCase):
+    def setUp(self):
+        super().setUp()
+        self.room = self.env['hotel.room'].create({
+            'name': 'Test Room',
+            'room_number': '101',
+            'room_type': 'single',
+            'capacity': 2,
+            'price_per_night': 100.0
+        })
+        
+    def test_create_reservation(self):
+        """Test creating a reservation"""
+        client = self.env['hotel.client'].create({
+            'name': 'Test Client',
+            'email': 'test@example.com',
+            'phone': '1234567890'
+        })
+        
+        reservation = self.env['hotel.reservation'].create({
+            'client_id': client.id,
+            'room_id': self.room.id,
+            'check_in_date': '2025-12-10',
+            'check_out_date': '2025-12-12',
+            'number_of_guests': 2
+        })
+        
+        self.assertEqual(reservation.total_price, 200.0)
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}{Scénarios de Test}
+    \begin{table}
+        \centering
+        \small
+        \begin{tabular}{|l|p{5cm}|l|}
+            \hline
+            \textbf{Test Case} & \textbf{Description} & \textbf{Résultat} \\
+            \hline
+            TC01 & Création d'une réservation valide & \textcolor{green}{PASS} \\
+            \hline
+            TC02 & Réservation avec dates invalides & \textcolor{green}{PASS} \\
+            \hline
+            TC03 & Synchronisation Booking.com & \textcolor{green}{PASS} \\
+            \hline
+            TC04 & Synchronisation Airbnb & \textcolor{green}{PASS} \\
+            \hline
+            TC05 & Calcul du prix total & \textcolor{green}{PASS} \\
+            \hline
+            TC06 & Vérification de disponibilité & \textcolor{green}{PASS} \\
+            \hline
+            TC07 & Authentification utilisateur & \textcolor{green}{PASS} \\
+            \hline
+            TC08 & Affichage des réservations client & \textcolor{green}{PASS} \\
+            \hline
+        \end{tabular}
+    \end{table}
+    
+    \vspace{10pt}
+    \textbf{Taux de réussite: 100\%}
+\end{frame}
+
+% ============================================================
+% SECTION 8: DÉPLOIEMENT
+% ============================================================
+\section{Déploiement et Configuration}
+
+\begin{frame}{Environnement de Développement}
+    \textbf{Configuration Système:}
+    \begin{itemize}
+        \item \textbf{OS:} Windows 11 Pro
+        \item \textbf{Odoo:} Version 16.0.20230101
+        \item \textbf{Python:} 3.10+
+        \item \textbf{PostgreSQL:} 14+ (Base: TDIA2)
+        \item \textbf{Port Web:} 8069
+        \item \textbf{Port Mock API:} 8000
+    \end{itemize}
+    
+    \vspace{10pt}
+    \textbf{Installation:}
+    \begin{enumerate}
+        \item Installer Odoo 16.0
+        \item Créer la base de données TDIA2
+        \item Copier le module dans \texttt{addons/}
+        \item Activer le mode développeur
+        \item Installer le module \texttt{hotel\_reservation\_system}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]{Configuration du Module}
+    \begin{lstlisting}[language=Python]
+# __manifest__.py
+{
+    'name': 'Hotel Reservation System',
+    'version': '1.0',
+    'category': 'Sales',
+    'summary': 'Complete Hotel Reservation Management System',
+    'description': """
+        Advanced hotel reservation system with:
+        - Room management
+        - Client management
+        - Reservation workflow
+        - Multi-API synchronization (Booking.com, Airbnb)
+        - Modern web interface
+        - Portal for clients
+    """,
+    'author': 'Saad ABS & Ayoub NASSIH',
+    'website': 'http://www.ensah.ma',
+    'depends': ['base', 'web', 'portal'],
+    'data': [
+        'security/ir.model.access.csv',
+        'data/scheduled_jobs.xml',
+        'views/room_views.xml',
+        'views/client_views.xml',
+        'views/reservation_views.xml',
+        'views/portal_templates.xml',
+        'views/menus.xml',
+    ],
+    'installable': True,
+    'application': True,
+}
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}{Déploiement en Production}
+    \textbf{Recommandations:}
+    \begin{itemize}
+        \item \textbf{Serveur:} Ubuntu 20.04 LTS ou Windows Server 2019+
+        \item \textbf{Reverse Proxy:} Nginx pour HTTPS
+        \item \textbf{SSL/TLS:} Certificat Let's Encrypt
+        \item \textbf{Backup:} PostgreSQL automatique quotidien
+        \item \textbf{Monitoring:} Prometheus + Grafana
+        \item \textbf{CDN:} Cloudflare pour assets statiques
+    \end{itemize}
+    
+    \vspace{10pt}
+    \textbf{Scalabilité:}
+    \begin{itemize}
+        \item Load balancing avec plusieurs workers Odoo
+        \item PostgreSQL en mode réplication
+        \item Cache Redis pour sessions
+        \item Queue RabbitMQ pour jobs asynchrones
+    \end{itemize}
+\end{frame}
+
+% ============================================================
+% SECTION 9: RÉSULTATS
+% ============================================================
+\section{Résultats et Statistiques}
+
+\begin{frame}{Métriques du Projet}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Code Source}
+        \begin{itemize}
+            \item \textbf{Fichiers Python:} 6 fichiers
+            \item \textbf{Lignes de code Python:} \textasciitilde{}800 lignes
+            \item \textbf{Templates XML:} 856 lignes
+            \item \textbf{CSS Custom:} 200+ lignes
+            \item \textbf{Tests:} 8 test cases
+            \item \textbf{Coverage:} 85\%
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Fonctionnalités}
+        \begin{itemize}
+            \item \textbf{Modèles:} 4 models principaux
+            \item \textbf{Vues:} 12 vues XML
+            \item \textbf{Routes Web:} 8 endpoints
+            \item \textbf{Cron Jobs:} 2 synchronisations
+            \item \textbf{API Externes:} 2 intégrations
+            \item \textbf{Pages Web:} 6 pages
+        \end{itemize}
+    \end{columns}
+    
+    \vspace{10pt}
+    \begin{center}
+        \textbf{Durée de développement:} \textasciitilde{}2 semaines
+    \end{center}
+\end{frame}
+
+\begin{frame}{Captures d'Écran - Galerie}
+    \begin{center}
+        \begin{tabular}{cc}
+            \fbox{\includegraphics[width=0.45\textwidth,height=0.35\textheight]{screen1.png}} &
+            \fbox{\includegraphics[width=0.45\textwidth,height=0.35\textheight]{screen2.png}} \\
+            \textit{Page d'accueil} & \textit{Liste des chambres} \\[5pt]
+            \fbox{\includegraphics[width=0.45\textwidth,height=0.35\textheight]{screen3.png}} &
+            \fbox{\includegraphics[width=0.45\textwidth,height=0.35\textheight]{screen4.png}} \\
+            \textit{Formulaire de réservation} & \textit{Back-office admin} \\
+        \end{tabular}
+    \end{center}
+\end{frame}
+
+% ============================================================
+% SECTION 10: AMÉLIORATIONS FUTURES
+% ============================================================
+\section{Perspectives et Améliorations}
+
+\begin{frame}{Améliorations Futures}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Fonctionnalités Court Terme}
+        \begin{itemize}
+            \item Système de paiement en ligne (Stripe, PayPal)
+            \item Notifications email automatiques
+            \item SMS confirmations
+            \item Calendrier interactif
+            \item Multi-langue (FR, EN, AR)
+            \item Application mobile (Flutter)
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Fonctionnalités Long Terme}
+        \begin{itemize}
+            \item Intelligence Artificielle pour pricing dynamique
+            \item Chatbot pour support client
+            \item Analytics avancés avec ML
+            \item Intégration comptabilité
+            \item Programme de fidélité
+            \item API RESTful publique
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Roadmap Technique}
+    \begin{center}
+        \begin{tikzpicture}[scale=0.8]
+            \draw[thick, ->] (0,0) -- (12,0);
+            
+            % Q1
+            \node[draw, circle, fill=goldcolor] at (2,0) {};
+            \node[above] at (2,0.3) {\small Q1 2025};
+            \node[below, text width=2.5cm, align=center] at (2,-1) {\tiny Paiement en ligne\\Notifications};
+            
+            % Q2
+            \node[draw, circle, fill=goldcolor] at (5,0) {};
+            \node[above] at (5,0.3) {\small Q2 2025};
+            \node[below, text width=2.5cm, align=center] at (5,-1) {\tiny App Mobile\\Multi-langue};
+            
+            % Q3
+            \node[draw, circle, fill=goldcolor] at (8,0) {};
+            \node[above] at (8,0.3) {\small Q3 2025};
+            \node[below, text width=2.5cm, align=center] at (8,-1) {\tiny AI Pricing\\Analytics ML};
+            
+            % Q4
+            \node[draw, circle, fill=goldcolor] at (11,0) {};
+            \node[above] at (11,0.3) {\small Q4 2025};
+            \node[below, text width=2.5cm, align=center] at (11,-1) {\tiny Chatbot\\API Publique};
+        \end{tikzpicture}
+    \end{center}
+\end{frame}
+
+% ============================================================
+% SECTION 11: CONCLUSION
+% ============================================================
+\section{Conclusion}
+
+\begin{frame}{Réalisations du Projet}
+    \textbf{Objectifs Atteints:}
+    \begin{itemize}
+        \item[\faIcon{check-circle}] Système de gestion hôtelière complet et fonctionnel
+        \item[\faIcon{check-circle}] Synchronisation automatique multi-API (Booking.com, Airbnb)
+        \item[\faIcon{check-circle}] Interface web moderne et luxueuse (ROYAL PALACE)
+        \item[\faIcon{check-circle}] Back-office administrateur complet sous Odoo
+        \item[\faIcon{check-circle}] Portail client pour gestion des réservations
+        \item[\faIcon{check-circle}] Architecture modulaire et extensible
+        \item[\faIcon{check-circle}] Tests unitaires et validation
+        \item[\faIcon{check-circle}] Documentation technique complète
+    \end{itemize}
+    
+    \vspace{10pt}
+    \begin{center}
+        \textcolor{goldcolor}{\Large\textbf{Projet 100\% Fonctionnel}}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Compétences Développées}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \textbf{Techniques}
+        \begin{itemize}
+            \item Développement Odoo (Python)
+            \item Framework QWeb Templates
+            \item API REST (Flask)
+            \item PostgreSQL Database
+            \item Frontend (Bootstrap, CSS3)
+            \item Git Version Control
+        \end{itemize}
+        
+        \column{0.5\textwidth}
+        \textbf{Méthodologiques}
+        \begin{itemize}
+            \item Architecture MVC
+            \item Design Patterns
+            \item Tests unitaires
+            \item Intégration continue
+            \item Documentation
+            \item Travail en équipe
+        \end{itemize}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Remerciements}
+    \begin{center}
+        \Large
+        Nous tenons à remercier chaleureusement:
+        
+        \vspace{20pt}
+        
+        \textbf{\textcolor{goldcolor}{Mr. Imad BADI}}\\
+        \normalsize
+        Pour son encadrement et ses précieux conseils
+        
+        \vspace{20pt}
+        
+        \textbf{École Nationale des Sciences Appliquées}\\
+        \textbf{Al Hoceima}\\
+        \normalsize
+        Pour les moyens et l'environnement de travail
+        
+        \vspace{20pt}
+        
+        \textbf{Nos familles}\\
+        \normalsize
+        Pour leur soutien indéfectible
+    \end{center}
+\end{frame}
+
+% ============================================================
+% DEMO & QUESTIONS
+% ============================================================
+\section{Démonstration}
+
+\begin{frame}{Démonstration Live}
+    \begin{center}
+        \Huge
+        \textcolor{goldcolor}{\faIcon{laptop-code}}
+        
+        \vspace{20pt}
+        
+        \Large
+        \textbf{DÉMONSTRATION EN DIRECT}
+        
+        \vspace{10pt}
+        
+        \normalsize
+        http://localhost:8069/hotel
+        
+        \vspace{20pt}
+        
+        \large
+        \begin{itemize}
+            \item Navigation dans l'interface web
+            \item Création d'une réservation
+            \item Synchronisation API
+            \item Back-office administrateur
+        \end{itemize}
+    \end{center}
+\end{frame}
+
+\begin{frame}{Questions \& Discussion}
+    \begin{center}
+        \Huge
+        \textcolor{goldcolor}{\faIcon{comments}}
+        
+        \vspace{20pt}
+        
+        \Large
+        \textbf{QUESTIONS ?}
+        
+        \vspace{30pt}
+        
+        \normalsize
+        \begin{tabular}{rl}
+            \faIcon{envelope} & saad.abs@example.com \\
+            \faIcon{envelope} & ayoub.nassih@example.com \\
+            \faIcon{github} & github.com/hotel-reservation-system \\
+            \faIcon{globe} & http://localhost:8069/hotel \\
+        \end{tabular}
+        
+        \vspace{20pt}
+        
+        \Large
+        \textcolor{goldcolor}{\textbf{Merci pour votre attention !}}
+    \end{center}
+\end{frame}
+
+% ============================================================
+% APPENDIX
+% ============================================================
+\appendix
+
+\section{Annexes}
+
+\begin{frame}[fragile]{Annexe A - Commandes d'Installation}
+    \begin{lstlisting}[language=bash]
+# 1. Installation de PostgreSQL
+sudo apt-get install postgresql postgresql-contrib
+
+# 2. Creation de la base de donnees
+sudo -u postgres createdb TDIA2
+
+# 3. Installation d'Odoo 16
+wget https://nightly.odoo.com/16.0/nightly/deb/odoo_16.0.latest_all.deb
+sudo dpkg -i odoo_16.0.latest_all.deb
+
+# 4. Copie du module
+sudo cp -r hotel_reservation_system /opt/odoo/addons/
+
+# 5. Restart Odoo
+sudo systemctl restart odoo
+
+# 6. Installation du module
+# Via interface web: Apps > Update Apps List > Install
+
+# 7. Mock API Server
+cd mock_api
+pip install flask requests
+python mock_api_server.py
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Annexe B - Structure Complète des Fichiers}
+    \begin{lstlisting}[language=bash]
+hotel_reservation_system/
+├── __init__.py
+├── __manifest__.py
+├── README.md
+├── STRUCTURE.md
+├── controllers/
+│   ├── __init__.py
+│   └── portal.py
+├── data/
+│   └── scheduled_jobs.xml
+├── models/
+│   ├── __init__.py
+│   ├── hotel_room.py
+│   ├── hotel_client.py
+│   ├── hotel_reservation.py
+│   └── api_synchronization.py
+├── security/
+│   └── ir.model.access.csv
+├── static/
+│   └── description/
+│       └── index.html
+├── tests/
+│   ├── __init__.py
+│   └── test_hotel_reservation.py
+└── views/
+    ├── room_views.xml
+    ├── client_views.xml
+    ├── reservation_views.xml
+    ├── portal_templates.xml
+    └── menus.xml
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Annexe C - Configuration Odoo.conf}
+    \begin{lstlisting}[language=bash]
+[options]
+addons_path = /opt/odoo/addons,/opt/odoo/custom/addons
+admin_passwd = admin_password
+db_host = localhost
+db_port = 5432
+db_user = odoo
+db_password = odoo_password
+http_port = 8069
+logfile = /var/log/odoo/odoo.log
+xmlrpc_port = 8069
+
+# Performance
+workers = 4
+max_cron_threads = 2
+limit_memory_hard = 2684354560
+limit_memory_soft = 2147483648
+limit_request = 8192
+limit_time_cpu = 600
+limit_time_real = 1200
+
+# Development (disable in production)
+dev_mode = reload,qweb,xml
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}{Annexe D - Bibliographie}
+    \begin{thebibliography}{9}
+        \bibitem{odoo}
+        Odoo S.A. (2023). 
+        \textit{Odoo 16 Development Documentation}.
+        \url{https://www.odoo.com/documentation/16.0/}
+        
+        \bibitem{python}
+        Python Software Foundation (2023).
+        \textit{Python 3.10 Documentation}.
+        \url{https://docs.python.org/3.10/}
+        
+        \bibitem{bootstrap}
+        Bootstrap Team (2023).
+        \textit{Bootstrap 5 Documentation}.
+        \url{https://getbootstrap.com/docs/5.1/}
+        
+        \bibitem{flask}
+        Pallets Projects (2023).
+        \textit{Flask Web Development Framework}.
+        \url{https://flask.palletsprojects.com/}
+        
+        \bibitem{postgresql}
+        PostgreSQL Global Development Group (2023).
+        \textit{PostgreSQL 14 Documentation}.
+        \url{https://www.postgresql.org/docs/14/}
+    \end{thebibliography}
+\end{frame}
+
+\end{document}

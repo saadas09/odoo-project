@@ -1,19 +1,63 @@
-# Hotel Reservation System - Odoo 17 Module
+# Hotel Reservation System - Odoo 16 Module
 
 ## Description
 
-Module complet de gestion de réservations d'hôtel pour Odoo 17 avec les fonctionnalités suivantes :
+Complete hotel reservation management module for Odoo 16 with the following features:
 
-- ✅ Gestion des chambres d'hôtel
-- ✅ Gestion des clients
-- ✅ Gestion des réservations
-- ✅ Calcul automatique des prix
-- ✅ Prévention des réservations qui se chevauchent
-- ✅ Synchronisation avec Booking.com et Airbnb via API
-- ✅ Interface web pour les réservations clients
-- ✅ Tâches CRON de synchronisation automatique
+- ✅ Hotel room management
+- ✅ Client management
+- ✅ Reservation management
+- ✅ Automatic price calculation
+- ✅ Overlapping reservation prevention
+- ✅ Booking.com and Airbnb API synchronization with Mock API for testing
+- ✅ Web interface for client reservations
+- ✅ Automatic synchronization CRON jobs
 
-## Structure du Module
+## Quick Start with Mock API
+
+### 1. Install Mock API Dependencies
+
+```powershell
+cd "C:\Program Files\Odoo 16.0.20230101\server\odoo\addons\hotel_reservation_system\mock_api"
+pip install -r requirements.txt
+```
+
+### 2. Start Mock API Server
+
+```powershell
+uvicorn server:app --reload --port 8000
+```
+
+### 3. Configure Odoo
+
+In Odoo, navigate to: **Settings > Technical > Parameters > System Parameters**
+
+Create parameter:
+- Key: `hotel_reservation.mock_api_endpoint`
+- Value: `http://localhost:8000`
+
+### 4. Create Sample Rooms
+
+Navigate to: **Hotel > Configuration > Rooms**
+
+Create rooms matching the mock API data:
+- Room 101 (Deluxe Suite)
+- Room 205 (Ocean View Room)
+- Room 310 (Family Suite)
+
+### 5. Test Synchronization
+
+Navigate to: **Hotel > Reservations**
+
+Click the buttons in the toolbar:
+- **"Sync Booking.com"** - Syncs 3 Booking.com reservations
+- **"Sync Airbnb"** - Syncs 3 Airbnb reservations
+
+Check results in: **Hotel > Configuration > API Synchronization**
+
+📖 **Detailed Documentation**: See `mock_api/README.md` for complete mock API documentation.
+
+## Module Structure
 
 ```
 hotel_reservation_system/

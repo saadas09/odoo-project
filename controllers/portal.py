@@ -10,6 +10,53 @@ _logger = logging.getLogger(__name__)
 
 class HotelReservationPortal(http.Controller):
 
+    @http.route(['/hotel', '/hotel/home'], type='http', auth='public', website=True)
+    def hotel_home(self, **kwargs):
+        """Display hotel homepage"""
+        rooms = request.env['hotel.room'].sudo().search([
+            ('status', '=', 'available')
+        ], limit=6)
+        
+        values = {
+            'rooms': rooms,
+            'user': request.env.user,
+        }
+        
+        return request.render('hotel_reservation_system.hotel_home_template', values)
+
+    @http.route('/hotel/my/bookings', type='http', auth='user', website=True)
+    def my_bookings(self, **kwargs):
+        """Display user's booking history"""
+        user = request.env.user
+        
+        # Try to get user's email from multiple sources
+        user_email = user.email or user.partner_id.email or user.login
+        
+        # Build search domain - search by email or username
+        domain = []
+        if user_email:
+            domain = ['|', '|',
+                      ('client_id.email', '=', user_email),
+                      ('client_id.email', 'ilike', user_email),
+                      ('client_name', 'ilike', user.name)]
+        else:
+            # If no email, search by username
+            domain = [('client_name', 'ilike', user.name)]
+        
+        reservations = request.env['hotel.reservation'].sudo().search(
+            domain, 
+            order='create_date desc'
+        )
+        
+        values = {
+            'reservations': reservations,
+            'user': user,
+            'debug_email': user_email,
+            'debug_name': user.name,
+        }
+        
+        return request.render('hotel_reservation_system.hotel_my_bookings_template', values)
+
     @http.route('/hotel/reservation/form', type='http', auth='public', website=True)
     def hotel_reservation_form(self, **kwargs):
         """Display hotel reservation form"""
@@ -75,7 +122,42 @@ class HotelReservationPortal(http.Controller):
 
     @http.route('/hotel/reservation/submit', type='http', auth='public', website=True, methods=['POST'], csrf=False)
     def submit_reservation(self, **post):
-        """Submit reservation form"""
+        """Submit reservation form - require login"""
+        try:
+            # Check if user is logged in
+            if request.env.user._is_public():
+                # Store form data in session and redirect to login
+                request.session['pending_reservation'] = post
+                return request.redirect('/web/login?redirect=/hotel/reservation/process')
+            
+            # User is logged in, process the reservation
+            return self._process_reservation(post)
+            
+        except Exception as e:
+            _logger.error(f"Error submitting reservation: {str(e)}", exc_info=True)
+            return request.redirect('/hotel/reservation/form?error=%s' % str(e))
+
+    @http.route('/hotel/reservation/process', type='http', auth='user', website=True)
+    def process_reservation(self, **kwargs):
+        """Process pending reservation after login"""
+        try:
+            # Get pending reservation data from session
+            post = request.session.get('pending_reservation')
+            if not post:
+                return request.redirect('/hotel/reservation/form?error=No pending reservation found')
+            
+            # Clear session data
+            request.session.pop('pending_reservation', None)
+            
+            # Process the reservation
+            return self._process_reservation(post)
+            
+        except Exception as e:
+            _logger.error(f"Error processing reservation: {str(e)}", exc_info=True)
+            return request.redirect('/hotel/reservation/form?error=%s' % str(e))
+
+    def _process_reservation(self, post):
+        """Internal method to process reservation data"""
         try:
             # Extract form data
             room_id = int(post.get('room_id'))

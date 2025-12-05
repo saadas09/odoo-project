@@ -1,12 +1,501 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Custom Luxury Hotel Layout -->
+    <template id="hotel_standalone_layout" name="Hotel Standalone Layout">
+        <html>
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Luxury Hotel - Reservation System</title>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"/>
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+                <link rel="preconnect" href="https://fonts.googleapis.com"/>
+                <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+                <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+                <style>
+                    :root {
+                        --navy: #0f1419;
+                        --dark-navy: #050810;
+                        --gold: #d4af37;
+                        --light-gold: #f4e4bc;
+                        --white: #ffffff;
+                        --light-gray: #f8f9fa;
+                        --text-dark: #2c3e50;
+                    }
+                    
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    
+                    body { 
+                        font-family: 'Inter', sans-serif; 
+                        min-height: 100vh;
+                        display: flex;
+                        flex-direction: column;
+                        background: var(--white);
+                        color: var(--text-dark);
+                        line-height: 1.7;
+                    }
+                    
+                    h1, h2, h3, h4, h5, h6 {
+                        font-family: 'Playfair Display', serif;
+                        font-weight: 700;
+                        letter-spacing: -0.5px;
+                    }
+                    
+                    /* Luxury Navigation */
+                    .luxury-navbar {
+                        background: rgba(15, 20, 25, 0.95);
+                        backdrop-filter: blur(20px);
+                        padding: 20px 0;
+                        box-shadow: 0 4px 30px rgba(0,0,0,0.1);
+                        position: sticky;
+                        top: 0;
+                        z-index: 1000;
+                        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+                    }
+                    
+                    .luxury-navbar .navbar-brand {
+                        font-family: 'Playfair Display', serif;
+                        font-size: 28px;
+                        font-weight: 700;
+                        color: var(--gold) !important;
+                        letter-spacing: 1px;
+                        text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+                    }
+                    
+                    .luxury-navbar a {
+                        color: var(--white) !important;
+                        text-decoration: none;
+                        margin: 0 20px;
+                        font-weight: 500;
+                        font-size: 15px;
+                        letter-spacing: 0.5px;
+                        transition: all 0.3s ease;
+                        position: relative;
+                    }
+                    
+                    .luxury-navbar a:hover {
+                        color: var(--gold) !important;
+                    }
+                    
+                    .luxury-navbar a::after {
+                        content: '';
+                        position: absolute;
+                        bottom: -5px;
+                        left: 0;
+                        width: 0;
+                        height: 2px;
+                        background: var(--gold);
+                        transition: width 0.3s ease;
+                    }
+                    
+                    .luxury-navbar a:hover::after {
+                        width: 100%;
+                    }
+                    
+                    /* Cards */
+                    .luxury-card {
+                        background: var(--white);
+                        border-radius: 20px;
+                        overflow: hidden;
+                        box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+                        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+                        border: 1px solid rgba(0,0,0,0.05);
+                    }
+                    
+                    .luxury-card:hover {
+                        transform: translateY(-10px);
+                        box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+                    }
+                    
+                    .luxury-card img {
+                        width: 100%;
+                        height: 280px;
+                        object-fit: cover;
+                        transition: transform 0.6s ease;
+                    }
+                    
+                    .luxury-card:hover img {
+                        transform: scale(1.08);
+                    }
+                    
+                    /* Buttons */
+                    .btn-luxury {
+                        background: linear-gradient(135deg, var(--gold) 0%, #b8941f 100%);
+                        color: var(--navy) !important;
+                        font-weight: 600;
+                        padding: 14px 40px;
+                        border-radius: 50px;
+                        border: none;
+                        font-size: 15px;
+                        letter-spacing: 1px;
+                        text-transform: uppercase;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+                        cursor: pointer;
+                    }
+                    
+                    .btn-luxury:hover {
+                        transform: translateY(-2px);
+                        box-shadow: 0 12px 35px rgba(212, 175, 55, 0.4);
+                        background: linear-gradient(135deg, #e6c142 0%, var(--gold) 100%);
+                    }
+                    
+                    .btn-luxury-outline {
+                        background: transparent;
+                        color: var(--navy) !important;
+                        border: 2px solid var(--navy);
+                        font-weight: 600;
+                        padding: 14px 40px;
+                        border-radius: 50px;
+                        font-size: 15px;
+                        letter-spacing: 1px;
+                        text-transform: uppercase;
+                        transition: all 0.3s ease;
+                    }
+                    
+                    .btn-luxury-outline:hover {
+                        background: var(--navy);
+                        color: var(--white) !important;
+                        transform: translateY(-2px);
+                    }
+                    
+                    /* Glass Effect */
+                    .glass-panel {
+                        background: rgba(255, 255, 255, 0.9);
+                        backdrop-filter: blur(20px);
+                        border-radius: 20px;
+                        border: 1px solid rgba(255, 255, 255, 0.3);
+                        padding: 40px;
+                        box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+                    }
+                    
+                    /* Section Headers */
+                    .section-header {
+                        text-align: center;
+                        margin-bottom: 60px;
+                    }
+                    
+                    .section-header h2 {
+                        font-size: 48px;
+                        color: var(--navy);
+                        margin-bottom: 15px;
+                        position: relative;
+                        display: inline-block;
+                    }
+                    
+                    .section-header h2::after {
+                        content: '';
+                        position: absolute;
+                        bottom: -10px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        width: 80px;
+                        height: 3px;
+                        background: var(--gold);
+                    }
+                    
+                    .section-header p {
+                        font-size: 18px;
+                        color: #666;
+                        margin-top: 25px;
+                    }
+                    
+                    /* Price Tag */
+                    .price-tag {
+                        background: var(--gold);
+                        color: var(--navy);
+                        padding: 8px 20px;
+                        border-radius: 25px;
+                        font-weight: 700;
+                        font-size: 20px;
+                        display: inline-block;
+                    }
+                    
+                    /* Badge */
+                    .status-badge {
+                        padding: 8px 20px;
+                        border-radius: 20px;
+                        font-size: 13px;
+                        font-weight: 600;
+                        letter-spacing: 0.5px;
+                        text-transform: uppercase;
+                    }
+                    
+                    .status-draft { background: #fff3cd; color: #856404; }
+                    .status-confirmed { background: #d4edda; color: #155724; }
+                    .status-cancelled { background: #f8d7da; color: #721c24; }
+                    
+                    /* Footer */
+                    .luxury-footer {
+                        background: var(--dark-navy);
+                        color: rgba(255,255,255,0.8);
+                        padding: 60px 0 30px;
+                        margin-top: auto;
+                    }
+                    
+                    .luxury-footer h5 {
+                        color: var(--gold);
+                        font-size: 20px;
+                        margin-bottom: 25px;
+                    }
+                    
+                    .luxury-footer a {
+                        color: rgba(255,255,255,0.7);
+                        text-decoration: none;
+                        transition: color 0.3s;
+                    }
+                    
+                    .luxury-footer a:hover {
+                        color: var(--gold);
+                    }
+                    
+                    #wrap { flex: 1; }
+                </style>
+            </head>
+            <body>
+                <!-- Luxury Navigation Bar -->
+                <nav class="luxury-navbar">
+                    <div class="container">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <a href="/hotel" class="navbar-brand">
+                                    <i class="fas fa-hotel me-2"></i>ROYAL PALACE
+                                </a>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <a href="/hotel"><i class="fas fa-home me-2"></i>Home</a>
+                                <a href="/hotel/rooms"><i class="fas fa-bed me-2"></i>Rooms</a>
+                                <a href="/hotel/reservation/form"><i class="fas fa-calendar-check me-2"></i>Book Now</a>
+                                <t t-if="request.env.user and not request.env.user._is_public()">
+                                    <a href="/hotel/my/bookings"><i class="fas fa-bookmark me-2"></i>My Bookings</a>
+                                    <a href="/web/session/logout?redirect=/hotel"><i class="fas fa-sign-out-alt me-2"></i><t t-esc="request.env.user.name"/></a>
+                                </t>
+                                <t t-else="">
+                                    <a href="/web/login?redirect=/hotel" class="btn-luxury ms-3" style="padding: 10px 25px; font-size: 13px;"><i class="fas fa-sign-in-alt me-2"></i>Sign In</a>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                
+                <t t-raw="0"/>
+                
+                <!-- Luxury Footer -->
+                <footer class="luxury-footer">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-4 mb-4">
+                                <h5><i class="fas fa-hotel me-2"></i>ROYAL PALACE</h5>
+                                <p>Experience luxury and comfort in the heart of the city. Your perfect stay awaits.</p>
+                                <div class="mt-3">
+                                    <a href="#" class="me-3"><i class="fab fa-facebook fa-lg"></i></a>
+                                    <a href="#" class="me-3"><i class="fab fa-instagram fa-lg"></i></a>
+                                    <a href="#" class="me-3"><i class="fab fa-twitter fa-lg"></i></a>
+                                    <a href="#"><i class="fab fa-linkedin fa-lg"></i></a>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <h5>Quick Links</h5>
+                                <div><a href="/hotel">Home</a></div>
+                                <div><a href="/hotel/rooms">Our Rooms</a></div>
+                                <div><a href="/hotel/reservation/form">Book Now</a></div>
+                                <div><a href="/hotel/my/bookings">My Bookings</a></div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <h5>Contact Us</h5>
+                                <div><i class="fas fa-map-marker-alt me-2"></i>123 Luxury Avenue, City</div>
+                                <div><i class="fas fa-phone me-2"></i>+1 (555) 123-4567</div>
+                                <div><i class="fas fa-envelope me-2"></i>info@royalpalace.com</div>
+                                <div class="mt-3">
+                                    <small style="color: var(--gold);"><i class="fas fa-shield-alt me-2"></i>Powered by Booking.com &amp; Airbnb Integration</small>
+                                </div>
+                            </div>
+                        </div>
+                        <hr style="border-color: rgba(212, 175, 55, 0.2); margin: 40px 0 20px;"/>
+                        <div class="text-center">
+                            <small>© 2025 Royal Palace Hotel. All rights reserved. | Integrated with Odoo Backend</small>
+                        </div>
+                    </div>
+                </footer>
+                
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+            </body>
+        </html>
+    </template>
+
+    <!-- Hotel Homepage Template -->
+    <template id="hotel_home_template" name="Hotel Homepage">
+        <t t-call="hotel_reservation_system.hotel_standalone_layout">
+            <div id="wrap">
+                <!-- Hero Section -->
+                <section style="background-image: linear-gradient(rgba(15, 20, 25, 0.6), rgba(15, 20, 25, 0.6)), url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=1920&amp;q=80'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 700px; display: flex; align-items: center; color: white; position: relative;">
+                    <div class="container text-center">
+                        <h1 class="display-2 fw-bold mb-3" style="font-family: 'Playfair Display', serif; letter-spacing: 2px; text-shadow: 0 4px 20px rgba(0,0,0,0.5);">Book Your Perfect Stay</h1>
+                        <p class="lead mb-5 fs-3" style="font-weight: 300; letter-spacing: 1px;">Luxury Rooms, Premium Service &amp; Real-Time Availability</p>
+                        
+                        <!-- Search Bar -->
+                        <div class="glass-panel mx-auto" style="max-width: 900px; padding: 30px;">
+                            <form action="/hotel/rooms" method="get">
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <label class="form-label text-dark"><i class="fas fa-calendar-alt me-2" style="color: var(--gold);"></i>Check-In</label>
+                                        <input type="date" class="form-control form-control-lg" name="check_in" style="border-radius: 10px;"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label text-dark"><i class="fas fa-calendar-alt me-2" style="color: var(--gold);"></i>Check-Out</label>
+                                        <input type="date" class="form-control form-control-lg" name="check_out" style="border-radius: 10px;"/>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label text-dark"><i class="fas fa-users me-2" style="color: var(--gold);"></i>Guests</label>
+                                        <select class="form-select form-select-lg" name="guests" style="border-radius: 10px;">
+                                            <option>1 Guest</option>
+                                            <option>2 Guests</option>
+                                            <option>3 Guests</option>
+                                            <option>4+ Guests</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 d-flex align-items-end">
+                                        <button type="submit" class="btn btn-luxury w-100" style="height: 48px;"><i class="fas fa-search me-2"></i>Search</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Featured Rooms -->
+                <section class="py-5" style="background: var(--light-gray);">
+                    <div class="container">
+                        <div class="section-header">
+                            <h2>Featured Rooms</h2>
+                            <p>Discover our most popular accommodations</p>
+                        </div>
+                        <div class="row">
+                            <t t-foreach="rooms" t-as="room">
+                                <div class="col-md-4 mb-4">
+                                    <div class="luxury-card">
+                                        <div style="position: relative; overflow: hidden;">
+                                            <img t-att-src="'https://images.unsplash.com/photo-161179' + str(room.id % 10) + '102344-9a68321a3020?w=500&amp;h=350&amp;fit=crop'" t-att-alt="room.name" style="height: 280px; object-fit: cover;"/>
+                                            <div style="position: absolute; top: 15px; right: 15px;">
+                                                <span class="price-tag"><i class="fas fa-dollar-sign"></i><t t-esc="int(room.price_per_night)"/>/night</span>
+                                            </div>
+                                        </div>
+                                        <div class="p-4">
+                                            <h4 style="font-family: 'Playfair Display', serif; color: var(--navy); margin-bottom: 15px;"><t t-esc="room.name"/></h4>
+                                            <div class="mb-3">
+                                                <span class="me-3"><i class="fas fa-door-open me-2" style="color: var(--gold);"></i>Room <strong><t t-esc="room.room_number"/></strong></span>
+                                                <span class="me-3"><i class="fas fa-users me-2" style="color: var(--gold);"></i><t t-esc="room.capacity"/> Guests</span>
+                                            </div>
+                                            <p style="color: #666; font-size: 14px;"><t t-esc="room.room_type.title()"/> - Perfect for a luxury getaway</p>
+                                            <a href="/hotel/reservation/form" class="btn btn-luxury w-100 mt-2">Reserve Now</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                        <div class="text-center mt-4">
+                            <a href="/hotel/rooms" class="btn btn-luxury-outline btn-lg">View All Rooms</a>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Services Section -->
+                <section class="py-5">
+                    <div class="container">
+                        <div class="section-header">
+                            <h2>World-Class Amenities</h2>
+                            <p>Everything you need for an unforgettable stay</p>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-md-3 col-sm-6 mb-4">
+                                <div class="p-4">
+                                    <i class="fas fa-wifi fa-3x mb-3" style="color: var(--gold);"></i>
+                                    <h5>High-Speed WiFi</h5>
+                                    <p style="color: #666;">Complimentary throughout</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-4">
+                                <div class="p-4">
+                                    <i class="fas fa-concierge-bell fa-3x mb-3" style="color: var(--gold);"></i>
+                                    <h5>24/7 Concierge</h5>
+                                    <p style="color: #666;">Always at your service</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-4">
+                                <div class="p-4">
+                                    <i class="fas fa-swimming-pool fa-3x mb-3" style="color: var(--gold);"></i>
+                                    <h5>Infinity Pool</h5>
+                                    <p style="color: #666;">Rooftop panoramic views</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-sm-6 mb-4">
+                                <div class="p-4">
+                                    <i class="fas fa-utensils fa-3x mb-3" style="color: var(--gold);"></i>
+                                    <h5>Fine Dining</h5>
+                                    <p style="color: #666;">Michelin-star cuisine</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Integrations Section -->
+                <section class="py-5" style="background: var(--navy); color: white;">
+                    <div class="container">
+                        <div class="section-header">
+                            <h2 style="color: var(--gold);">Trusted Integration Partners</h2>
+                            <p style="color: rgba(255,255,255,0.8);">Seamlessly connected with leading platforms</p>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-md-4 mb-4">
+                                <div class="glass-panel" style="background: rgba(255,255,255,0.05); border-color: rgba(212,175,55,0.3);">
+                                    <i class="fab fa-stripe fa-4x mb-3" style="color: var(--gold);"></i>
+                                    <h4 style="color: white;">Booking.com</h4>
+                                    <p style="color: rgba(255,255,255,0.7);">Real-time synchronization with Booking.com reservations</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="glass-panel" style="background: rgba(255,255,255,0.05); border-color: rgba(212,175,55,0.3);">
+                                    <i class="fab fa-airbnb fa-4x mb-3" style="color: var(--gold);"></i>
+                                    <h4 style="color: white;">Airbnb</h4>
+                                    <p style="color: rgba(255,255,255,0.7);">Automated booking sync from Airbnb platform</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-4">
+                                <div class="glass-panel" style="background: rgba(255,255,255,0.05); border-color: rgba(212,175,55,0.3);">
+                                    <i class="fas fa-server fa-4x mb-3" style="color: var(--gold);"></i>
+                                    <h4 style="color: white;">Odoo Backend</h4>
+                                    <p style="color: rgba(255,255,255,0.7);">Powerful management system integration</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
     <!-- Hotel Reservation Form Template -->
     <template id="hotel_reservation_form_template" name="Hotel Reservation Form">
-        <t t-call="website.layout">
-            <div id="wrap" class="oe_structure oe_empty">
-                <section class="s_cover o_cc o_cc1" data-vcss="001" data-snippet="s_cover">
+        <t t-call="hotel_reservation_system.hotel_standalone_layout">
+            <div id="wrap">
+                <!-- Header Section -->
+                <section class="pt-5 pb-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
                     <div class="container">
-                        <h1 class="text-center mb-4">Book Your Room</h1>
+                        <h1 class="text-center text-white display-4 fw-bold">Book Your Room</h1>
+                        <p class="text-center text-white lead">Complete the form below to make your reservation</p>
+                    </div>
+                </section>
+                
+                <section class="pt-5 pb-5 bg-light">
+                    <div class="container">
+                        <nav aria-label="breadcrumb" class="mb-4">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/hotel">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Booking Form</li>
+                            </ol>
+                        </nav>
                         
                         <t t-if="error">
                             <div class="alert alert-danger" role="alert">
@@ -21,55 +510,55 @@
                         </t>
                         
                         <div class="row justify-content-center">
-                            <div class="col-lg-8">
+                            <div class="col-lg-9">
                                 <form method="post" action="/hotel/reservation/submit" class="s_website_form">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                     
-                                    <div class="card mb-4">
-                                        <div class="card-header">
-                                            <h4>Personal Information</h4>
+                                    <div class="card mb-4 shadow-sm border-0" style="border-radius: 15px;">
+                                        <div class="card-header text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px 15px 0 0;">
+                                            <h4 class="mb-0"><i class="fa fa-user me-2"></i>Personal Information</h4>
                                         </div>
-                                        <div class="card-body">
+                                        <div class="card-body p-4">
                                             <div class="row">
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="client_name" class="form-label">Full Name *</label>
-                                                    <input type="text" class="form-control" id="client_name" name="client_name" required="required"/>
+                                                    <label for="client_name" class="form-label fw-bold">Full Name *</label>
+                                                    <input type="text" class="form-control form-control-lg" id="client_name" name="client_name" required="required" placeholder="Enter your full name"/>
                                                 </div>
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="client_email" class="form-label">Email *</label>
-                                                    <input type="email" class="form-control" id="client_email" name="client_email" required="required"/>
+                                                    <label for="client_email" class="form-label fw-bold">Email *</label>
+                                                    <input type="email" class="form-control form-control-lg" id="client_email" name="client_email" required="required" placeholder="your@email.com"/>
                                                 </div>
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="client_phone" class="form-label">Phone</label>
-                                                    <input type="tel" class="form-control" id="client_phone" name="client_phone"/>
+                                                    <label for="client_phone" class="form-label fw-bold">Phone</label>
+                                                    <input type="tel" class="form-control form-control-lg" id="client_phone" name="client_phone" placeholder="+1 (555) 123-4567"/>
                                                 </div>
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="passport_number" class="form-label">Passport Number</label>
-                                                    <input type="text" class="form-control" id="passport_number" name="passport_number"/>
+                                                    <label for="passport_number" class="form-label fw-bold">Passport Number</label>
+                                                    <input type="text" class="form-control form-control-lg" id="passport_number" name="passport_number" placeholder="Optional"/>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     
-                                    <div class="card mb-4">
-                                        <div class="card-header">
-                                            <h4>Reservation Details</h4>
+                                    <div class="card mb-4 shadow-sm border-0" style="border-radius: 15px;">
+                                        <div class="card-header text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px 15px 0 0;">
+                                            <h4 class="mb-0"><i class="fa fa-calendar-alt me-2"></i>Reservation Details</h4>
                                         </div>
-                                        <div class="card-body">
+                                        <div class="card-body p-4">
                                             <div class="row">
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="check_in" class="form-label">Check-in Date *</label>
-                                                    <input type="date" class="form-control" id="check_in" name="check_in" required="required" t-att-value="check_in"/>
+                                                    <label for="check_in" class="form-label fw-bold">Check-in Date *</label>
+                                                    <input type="date" class="form-control form-control-lg" id="check_in" name="check_in" required="required" t-att-value="check_in"/>
                                                 </div>
                                                 <div class="col-md-6 mb-3">
-                                                    <label for="check_out" class="form-label">Check-out Date *</label>
-                                                    <input type="date" class="form-control" id="check_out" name="check_out" required="required" t-att-value="check_out"/>
+                                                    <label for="check_out" class="form-label fw-bold">Check-out Date *</label>
+                                                    <input type="date" class="form-control form-control-lg" id="check_out" name="check_out" required="required" t-att-value="check_out"/>
                                                 </div>
                                             </div>
                                             
                                             <div class="mb-3">
-                                                <label for="room_id" class="form-label">Select Room *</label>
-                                                <select class="form-select" id="room_id" name="room_id" required="required">
+                                                <label for="room_id" class="form-label fw-bold">Select Room *</label>
+                                                <select class="form-select form-select-lg" id="room_id" name="room_id" required="required">
                                                     <option value="">Choose a room...</option>
                                                     <t t-foreach="rooms" t-as="room">
                                                         <option t-att-value="room.id">
@@ -81,8 +570,13 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="text-center">
-                                        <button type="submit" class="btn btn-primary btn-lg">Submit Reservation</button>
+                                    <div class="text-center mt-4">
+                                        <button type="submit" class="btn btn-lg px-5 py-3 text-white fw-bold" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 50px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
+                                            <i class="fa fa-check-circle me-2"></i>Submit Reservation
+                                        </button>
+                                        <div class="mt-3">
+                                            <a href="/hotel/rooms" class="btn btn-outline-secondary btn-lg px-5" style="border-radius: 50px;">View All Rooms</a>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
@@ -95,69 +589,92 @@
 
     <!-- Hotel Reservation Confirmation Template -->
     <template id="hotel_reservation_confirmation_template" name="Reservation Confirmation">
-        <t t-call="website.layout">
-            <div id="wrap" class="oe_structure oe_empty">
-                <section class="s_cover o_cc o_cc1" data-vcss="001" data-snippet="s_cover">
+        <t t-call="hotel_reservation_system.hotel_standalone_layout">
+            <div id="wrap">
+                <!-- Success Header -->
+                <section class="pt-5 pb-3" style="background: linear-gradient(135deg, #52c234 0%, #2ecc71 100%);">
+                    <div class="container text-center">
+                        <div class="mb-3">
+                            <i class="fa fa-check-circle fa-5x text-white"></i>
+                        </div>
+                        <h1 class="text-white display-4 fw-bold mb-2">Reservation Confirmed!</h1>
+                        <p class="text-white lead">Thank you for booking with us</p>
+                    </div>
+                </section>
+                
+                <section class="pt-5 pb-5 bg-light">
                     <div class="container">
+                        <nav aria-label="breadcrumb" class="mb-4">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/hotel">Home</a></li>
+                                <li class="breadcrumb-item"><a href="/hotel/reservation/form">Booking Form</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Confirmation</li>
+                            </ol>
+                        </nav>
+                        
                         <div class="row justify-content-center">
-                            <div class="col-lg-8">
-                                <div class="alert alert-success text-center" role="alert">
-                                    <h2><i class="fa fa-check-circle"/> Reservation Created Successfully!</h2>
-                                </div>
-                                
-                                <div class="card">
-                                    <div class="card-header">
-                                        <h3>Reservation Details</h3>
+                            <div class="col-lg-9">
+                                <div class="card mb-4 shadow-sm border-0" style="border-radius: 15px;">
+                                    <div class="card-header text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px 15px 0 0;">
+                                        <h3 class="mb-0"><i class="fa fa-file-alt me-2"></i>Reservation Details</h3>
                                     </div>
-                                    <div class="card-body">
+                                    <div class="card-body p-4">
+                                        <div class="row mb-4">
+                                            <div class="col-md-6 mb-3">
+                                                <div class="p-3 bg-light rounded">
+                                                    <small class="text-muted d-block mb-1">Reservation Number</small>
+                                                    <strong class="fs-5 text-primary"><t t-esc="reservation.name"/></strong>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <div class="p-3 bg-light rounded">
+                                                    <small class="text-muted d-block mb-1">Status</small>
+                                                    <span class="badge bg-info fs-6"><t t-esc="reservation.status.title()"/></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
                                         <table class="table table-borderless">
                                             <tr>
-                                                <th>Reservation Number:</th>
-                                                <td><t t-esc="reservation.name"/></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Guest Name:</th>
+                                                <th width="35%"><i class="fa fa-user me-2 text-primary"></i>Guest Name:</th>
                                                 <td><t t-esc="reservation.client_name"/></td>
                                             </tr>
                                             <tr>
-                                                <th>Email:</th>
+                                                <th><i class="fa fa-envelope me-2 text-primary"></i>Email:</th>
                                                 <td><t t-esc="reservation.client_email"/></td>
                                             </tr>
                                             <tr>
-                                                <th>Room:</th>
-                                                <td>Room <t t-esc="reservation.room_number"/> - <t t-esc="reservation.room_type"/></td>
+                                                <th><i class="fa fa-door-open me-2 text-primary"></i>Room:</th>
+                                                <td>Room <t t-esc="reservation.room_number"/> - <t t-esc="reservation.room_type.title()"/></td>
                                             </tr>
                                             <tr>
-                                                <th>Check-in:</th>
+                                                <th><i class="fa fa-calendar-check me-2 text-primary"></i>Check-in:</th>
                                                 <td><t t-esc="reservation.check_in"/></td>
                                             </tr>
                                             <tr>
-                                                <th>Check-out:</th>
+                                                <th><i class="fa fa-calendar-times me-2 text-primary"></i>Check-out:</th>
                                                 <td><t t-esc="reservation.check_out"/></td>
                                             </tr>
                                             <tr>
-                                                <th>Number of Nights:</th>
-                                                <td><t t-esc="reservation.nights"/></td>
+                                                <th><i class="fa fa-moon me-2 text-primary"></i>Number of Nights:</th>
+                                                <td><t t-esc="reservation.nights"/> nights</td>
                                             </tr>
-                                            <tr>
-                                                <th>Total Price:</th>
-                                                <td class="h4">$<t t-esc="reservation.total_price"/></td>
-                                            </tr>
-                                            <tr>
-                                                <th>Status:</th>
-                                                <td><span class="badge bg-info"><t t-esc="reservation.status"/></span></td>
+                                            <tr class="border-top">
+                                                <th class="pt-3"><i class="fa fa-dollar-sign me-2 text-success"></i>Total Price:</th>
+                                                <td class="pt-3"><h4 class="text-success mb-0">$<t t-esc="'%.2f' % reservation.total_price"/></h4></td>
                                             </tr>
                                         </table>
                                         
-                                        <div class="alert alert-info mt-4">
-                                            <p><strong>Note:</strong> Your reservation is currently in draft status. Our team will review and confirm your reservation shortly. You will receive a confirmation email at <t t-esc="reservation.client_email"/>.</p>
+                                        <div class="alert alert-info mt-4 border-0" style="background-color: #e3f2fd;">
+                                            <h5 class="alert-heading"><i class="fa fa-info-circle me-2"></i>What's Next?</h5>
+                                            <p class="mb-0">Your reservation is currently in draft status. Our team will review and confirm your reservation shortly. You will receive a confirmation email at <strong><t t-esc="reservation.client_email"/></strong>.</p>
                                         </div>
                                     </div>
                                 </div>
                                 
                                 <div class="text-center mt-4">
-                                    <a href="/hotel/reservation/form" class="btn btn-secondary">Make Another Reservation</a>
-                                    <a href="/hotel/rooms" class="btn btn-primary">View Available Rooms</a>
+                                    <a href="/hotel" class="btn btn-outline-secondary btn-lg px-5 me-2" style="border-radius: 50px;"><i class="fa fa-home me-2"></i>Back to Home</a>
+                                    <a href="/hotel/rooms" class="btn btn-lg px-5 text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 50px;"><i class="fa fa-door-open me-2"></i>View All Rooms</a>
                                 </div>
                             </div>
                         </div>
@@ -169,27 +686,43 @@
 
     <!-- Hotel Rooms List Template -->
     <template id="hotel_rooms_list_template" name="Hotel Rooms">
-        <t t-call="website.layout">
-            <div id="wrap" class="oe_structure oe_empty">
-                <section class="s_cover o_cc o_cc1" data-vcss="001" data-snippet="s_cover">
+        <t t-call="hotel_reservation_system.hotel_standalone_layout">
+            <div id="wrap">
+                <!-- Header Section -->
+                <section style="background: linear-gradient(rgba(15, 20, 25, 0.7), rgba(15, 20, 25, 0.7)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920') center/cover; padding: 100px 0; color: white;">
+                    <div class="container text-center">
+                        <h1 class="display-3 fw-bold" style="font-family: 'Playfair Display', serif;">Our Luxury Rooms</h1>
+                        <p class="lead fs-4">Choose from our selection of premium accommodations</p>
+                    </div>
+                </section>
+                
+                <section class="py-5" style="background: var(--light-gray);">
                     <div class="container">
-                        <h1 class="text-center mb-5">Our Rooms</h1>
+                        <nav aria-label="breadcrumb" class="mb-4">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/hotel" style="color: var(--gold);">Home</a></li>
+                                <li class="breadcrumb-item active">Rooms</li>
+                            </ol>
+                        </nav>
                         
                         <div class="row">
                             <t t-foreach="rooms" t-as="room">
-                                <div class="col-md-6 col-lg-4 mb-4">
-                                    <div class="card h-100">
-                                        <div class="card-body">
-                                            <h5 class="card-title"><t t-esc="room.name"/></h5>
-                                            <p class="card-text">
-                                                <strong>Room Number:</strong> <t t-esc="room.room_number"/><br/>
-                                                <strong>Type:</strong> <t t-esc="room.room_type"/><br/>
-                                                <strong>Capacity:</strong> <t t-esc="room.capacity"/> person(s)<br/>
-                                                <strong>Price:</strong> $<t t-esc="room.price_per_night"/>/night
-                                            </p>
+                                <div class="col-lg-4 col-md-6 mb-4">
+                                    <div class="luxury-card">
+                                        <div style="position: relative;">
+                                            <img t-att-src="'https://images.unsplash.com/photo-158071' + str(room.id % 10) + '74006-56d6f45d1e63?w=500&amp;h=350&amp;fit=crop'" t-att-alt="room.name"/>
+                                            <div style="position: absolute; top: 15px; right: 15px;">
+                                                <span class="price-tag"><i class="fas fa-dollar-sign"></i><t t-esc="int(room.price_per_night)"/></span>
+                                            </div>
                                         </div>
-                                        <div class="card-footer">
-                                            <a href="/hotel/reservation/form" class="btn btn-primary btn-block">Book Now</a>
+                                        <div class="p-4">
+                                            <h4 style="font-family: 'Playfair Display', serif; color: var(--navy); margin-bottom: 15px;"><t t-esc="room.name"/></h4>
+                                            <div class="mb-3">
+                                                <span class="d-block mb-2"><i class="fas fa-door-open me-2" style="color: var(--gold);"></i>Room <strong><t t-esc="room.room_number"/></strong></span>
+                                                <span class="d-block mb-2"><i class="fas fa-bed me-2" style="color: var(--gold);"></i><t t-esc="room.room_type.title()"/></span>
+                                                <span class="d-block mb-2"><i class="fas fa-users me-2" style="color: var(--gold);"></i><t t-esc="room.capacity"/> Guest<t t-if="room.capacity > 1">s</t></span>
+                                            </div>
+                                            <a href="/hotel/reservation/form" class="btn btn-luxury w-100"><i class="fas fa-calendar-check me-2"></i>Book Now</a>
                                         </div>
                                     </div>
                                 </div>
@@ -197,10 +730,122 @@
                         </div>
                         
                         <t t-if="not rooms">
-                            <div class="alert alert-warning text-center">
-                                <p>No rooms available at the moment. Please check back later.</p>
+                            <div class="text-center py-5">
+                                <i class="fas fa-bed fa-5x mb-4" style="color: #ccc;"></i>
+                                <h3>No Rooms Available</h3>
+                                <p class="text-muted">Please check back later or contact us for more information.</p>
                             </div>
                         </t>
+                        
+                        <div class="text-center mt-5">
+                            <a href="/hotel" class="btn btn-luxury-outline me-3"><i class="fas fa-home me-2"></i>Back to Home</a>
+                            <a href="/hotel/reservation/form" class="btn btn-luxury"><i class="fas fa-calendar-plus me-2"></i>Make Reservation</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- My Bookings Template -->
+    <template id="hotel_my_bookings_template" name="My Bookings">
+        <t t-call="hotel_reservation_system.hotel_standalone_layout">
+            <div id="wrap">
+                <!-- Header Section -->
+                <section class="pt-5 pb-3" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <div class="container">
+                        <h1 class="text-center text-white display-4 fw-bold">My Bookings</h1>
+                        <p class="text-center text-white lead">View and manage your reservations</p>
+                    </div>
+                </section>
+                
+                <section class="pt-5 pb-5 bg-light">
+                    <div class="container">
+                        <nav aria-label="breadcrumb" class="mb-4">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a href="/hotel">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">My Bookings</li>
+                            </ol>
+                        </nav>
+                        
+                        <t t-if="reservations">
+                            <div class="row">
+                                <t t-foreach="reservations" t-as="reservation">
+                                    <div class="col-lg-6 mb-4">
+                                        <div class="card shadow-sm border-0" style="border-radius: 15px;">
+                                            <div class="card-header text-white d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px 15px 0 0;">
+                                                <h5 class="mb-0"><i class="fa fa-file-alt me-2"></i><t t-esc="reservation.name"/></h5>
+                                                <span class="badge" t-att-class="'bg-success' if reservation.status == 'confirmed' else 'bg-warning' if reservation.status == 'draft' else 'bg-danger'">
+                                                    <t t-esc="reservation.status.title()"/>
+                                                </span>
+                                            </div>
+                                            <div class="card-body p-4">
+                                                <div class="row mb-3">
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">Room</small>
+                                                        <strong><i class="fa fa-door-open me-1 text-primary"></i>Room <t t-esc="reservation.room_number"/></strong>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">Type</small>
+                                                        <strong><t t-esc="reservation.room_type.title()"/></strong>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row mb-3">
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">Check-in</small>
+                                                        <strong><i class="fa fa-calendar-check me-1 text-success"></i><t t-esc="reservation.check_in"/></strong>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">Check-out</small>
+                                                        <strong><i class="fa fa-calendar-times me-1 text-danger"></i><t t-esc="reservation.check_out"/></strong>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row mb-3">
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">Nights</small>
+                                                        <strong><i class="fa fa-moon me-1"></i><t t-esc="reservation.nights"/> nights</strong>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <small class="text-muted d-block">Total Price</small>
+                                                        <h5 class="text-success mb-0"><i class="fa fa-dollar-sign me-1"></i><t t-esc="'%.2f' % reservation.total_price"/></h5>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="alert alert-info border-0 mb-0" style="background-color: #e3f2fd;">
+                                                    <small><i class="fa fa-info-circle me-1"></i>Booked on <t t-esc="reservation.create_date.strftime('%B %d, %Y')"/></small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </t>
+                        
+                        <t t-else="">
+                            <div class="text-center py-5">
+                                <i class="fa fa-calendar-times fa-5x text-muted mb-4"></i>
+                                <h3>No Bookings Found</h3>
+                                <p class="text-muted mb-4">You haven't made any reservations yet.</p>
+                                <div class="alert alert-info">
+                                    <small>
+                                        <strong>Debug Info:</strong><br/>
+                                        Logged in as: <strong><t t-esc="user.name"/></strong><br/>
+                                        Email: <strong><t t-esc="debug_email or 'No email set'"/></strong><br/>
+                                        <em>Make sure to book with this email to see your reservations here.</em>
+                                    </small>
+                                </div>
+                                <a href="/hotel/reservation/form" class="btn btn-lg px-5 text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 50px;">
+                                    <i class="fa fa-calendar-plus me-2"></i>Make Your First Reservation
+                                </a>
+                            </div>
+                        </t>
+                        
+                        <div class="text-center mt-5">
+                            <a href="/hotel" class="btn btn-outline-secondary btn-lg px-5 me-2" style="border-radius: 50px;"><i class="fa fa-home me-2"></i>Back to Home</a>
+                            <a href="/hotel/reservation/form" class="btn btn-lg px-5 text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; border-radius: 50px;"><i class="fa fa-calendar-plus me-2"></i>New Reservation</a>
+                        </div>
                     </div>
                 </section>
             </div>

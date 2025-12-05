@@ -32,6 +32,20 @@
               parent="menu_hotel_reservation_root"
               sequence="100"/>
 
+    <!-- Sync Booking.com Menu Action -->
+    <menuitem id="menu_sync_booking"
+              name="Sync Booking.com"
+              parent="menu_hotel_configuration"
+              action="action_sync_booking_reservations"
+              sequence="5"/>
+
+    <!-- Sync Airbnb Menu Action -->
+    <menuitem id="menu_sync_airbnb"
+              name="Sync Airbnb"
+              parent="menu_hotel_configuration"
+              action="action_sync_airbnb_reservations"
+              sequence="6"/>
+
     <!-- API Synchronization Menu -->
     <record id="action_api_synchronization" model="ir.actions.act_window">
         <field name="name">API Synchronization</field>
